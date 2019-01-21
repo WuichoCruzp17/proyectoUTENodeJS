@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function (event) {
     modsJS.buttons.setEvetnButtonRegister();
+    /* modsJS.buttons.setBtnLogin(); */
 });
 
 const _object = {
@@ -15,17 +16,34 @@ var modsJS = {
 
     buttons: {
 
+        setBtnLogin: function () {
+            const $btn = document.getElementById('btnLogin');
+            $btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if(modsJS.validateFormulario('login-form')){
+                    modsJS.login(modsJS.setObjectLogin());
+                }
+            });
+        },
+
         setEvetnButtonRegister: function () {
             const $btn = document.getElementById('btnRegistrarse');
             $btn.addEventListener('click', function (e) {
                 e.preventDefault();
-                modsJS.validateFormulario();
+                const result = modsJS.validateFormulario('register-form');
+                if (result) {
+                    const isValido = modsJS.validatePassword();
+                    if (isValido) {
+                        modsJS.setObject();
+                    }
+                }
+
             });
         }
     },
 
-    validateFormulario: function () {
-        const $element = document.getElementById('register-form');
+    validateFormulario: function (form) {
+        const $element = document.getElementById(form);
         const $inputs = $element.querySelectorAll('input');
         const cont = $inputs.length;
         var c = 0;
@@ -38,12 +56,12 @@ var modsJS = {
 
                     //Se muestra un texto a modo de ejemplo, luego va a ser un icono
                     if (reg.test(item.value) && regOficial.test(item.value)) {
-                        console.log( "válido oficial y extraoficialmente");
+                        console.log("válido oficial y extraoficialmente");
                     } else if (reg.test(item.value)) {
-                         console.log("válido extraoficialmente");
+                        console.log("válido extraoficialmente");
 
                     } else {
-                       alert('El correo no es valido');
+                        alert('El correo no es valido');
                     }
                 }
                 c++;
@@ -52,11 +70,10 @@ var modsJS = {
         });
         if (c !== cont) {
             alert('Por favor de llenar el fomulario');
+            return false;
         } else {
-            const isValido = modsJS.validatePassword();
-            if (isValido) {
-                modsJS.setObject();
-            }
+            return true;
+
         }
     },
 
@@ -65,6 +82,17 @@ var modsJS = {
         const $password = document.getElementById('password_register');
         const $confirmPassword = document.getElementById('confirm-password_register');
         return ($password.value === $confirmPassword.value) ? true : false;
+    },
+    
+    setObjectLogin:function(){
+        const $element = document.getElementById('login-form');
+        const $inputs = $element.querySelectorAll('.login');
+        const object = new Object();
+        $inputs.forEach(function(value,kye){
+            object[value.name] = value.value;
+        });
+       /*  console.log(object); */
+        return object;
     },
 
     setObject: function (object) {
@@ -97,7 +125,7 @@ var modsJS = {
             }
             if (v === c) {
                 modsJS.save(object);
-            }else{
+            } else {
                 console.log(result);
             }
         });
@@ -111,6 +139,18 @@ var modsJS = {
             dataType: 'json'
         }).done(function (result) {
             console.log(result);
+        });
+    },
+
+    login:function(object){
+        console.log(object);
+        $.ajax({
+            method: "POST",
+            url: "/ute/login",
+            data: object,
+            dataType: 'json'
+        }).done(function (result) {
+            console.log('Sesion',result);
         });
     }
 

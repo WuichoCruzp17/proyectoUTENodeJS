@@ -7,12 +7,23 @@ passport.use('local.signin', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, username, password, done) => {
-    const rows = await pool.query('SELECT*FROM users WHERE username =? ',[username]);
+    const usuarioId = parseInt(req.body.usuario);
+    var  rows =null;
+    switch(usuarioId){
+        case 1:
+        rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMAIL = ? ',[req.body.username]);
+        break;
+    }
     if(rows.length>0){
+        /* console.log(req.body);
+        console.log(rows); */
         const user = rows[0];
-         const validPassword =  await  helpers.matchPassword(password, user.password);
+        /* console.log('password: ',password, 'userPassword:', user.PASSWORD); */
+         const validPassword =  await  helpers.matchPassword(password, user.PASSWORD);
+         /* console.log(validPassword); */
          if(validPassword){
-             done(null, user, req.flash('success','Welcome'+user.username));
+             console.log('Usuario valido');
+             done(null,  user, req.flash('success','Welcome'+user.NOMBRE));
          }else{
              done(null, false, req.flash('message','Incorrect Password'));
          }
@@ -34,22 +45,27 @@ passport.use('local.signup', new LocalStrategy({
         password,
         fullname
     };
-    newUser.password = await helpers.encryptPassword(password);
+   /*  newUser.password = await helpers.encryptPassword(password);
     const result = await pool.query('INSERT INTO users SET ?', [newUser]);
     console.log(result);
-    newUser.id = result.insertId;
-    return done(null, newUser);
+    newUser.id = result.insertId;*/
+    return done(null, newUser); 
 }));
 /**
  * Función que se encarga de guardar la session del usuario
  */
 passport.serializeUser((user, done) => {
-    done(null, user.id);
+    console.log(user);
+    switch(user.USUARIO_ID){
+        case 1:
+        done(null, user.EMPLEADO_ID);
+        break;
+    }
 });
 /**
  * Función que se encarga de validar si hay una cuenta de usuaria existente.
  */
 passport.deserializeUser(async (id, done) => {
-    const rows = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+    const rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [id]);
     done(null, rows[0]);
 });
