@@ -1,0 +1,21 @@
+.hidden{
+    display: none;
+}
+.main-content {
+width: 100%;
+height: calc(100vh - 70px);
+position: relative;
+/* padding: 24px; */
+padding-bottom: 0;
+/* display: -webkit-flex;
+display: -moz-flex;
+display: -ms-flexbox;
+display: -o-flex;
+display: flex;
+-webkit-flex-direction: column;
+-ms-flex-direction: column;
+flex-direction: column;
+-webkit-flex-wrap: nowrap;
+-ms-flex-wrap: nowrap;
+flex-wrap: nowrap; */
+}

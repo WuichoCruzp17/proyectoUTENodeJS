@@ -11,6 +11,13 @@ alumnoController.save = async(req, res)=>{
     const  passwordEncrypt = await helpers.encryptPassword(password);
     const isInsert = await pool.query(query,[0,nombre, apellido_paterno,apellido_materno,matricula,email,passwordEncrypt,'']);
     console.log(isInsert);
+    var mailOptions = {
+        from: 'luis.segura@novasys.com.mx',
+        to: email,
+        subject: 'Bienvenido al sistema.',
+        text: 'Hola '+nombre+""+apellido_paterno+""+apellido_materno
+      };
+      helpers.setEmail(mailOptions);
     if(isInsert.affectedRows ===1 ){
         res.json({success:'Exito'});
     }else{res.json({error:'Hubo un Problema en el Servicio'});} 

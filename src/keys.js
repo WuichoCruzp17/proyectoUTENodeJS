@@ -4,5 +4,12 @@ module.exports ={
         user:'root',
         password:'',
         database:'escuela'
+    },
+    email:{
+        service: 'gmail',
+        auth: {
+          user: 'luis.segura@novasys.com.mx',
+          pass: ''
+        }
     }
 };
