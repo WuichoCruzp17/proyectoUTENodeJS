@@ -8,4 +8,8 @@ empleadosController.getViewEmpleados =async (req, res)=>{
     console.log(usuario);
     res.render('ute/empleados',{usuario,empleados});
 };
+empleadosController.save =async(req,res)=>{
+console.log(req.body);
+res.json({success:'exito'});
+};
 module.exports = empleadosController;

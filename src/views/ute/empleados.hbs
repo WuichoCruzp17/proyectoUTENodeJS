@@ -15,10 +15,10 @@
         </div>
 
         <div class="row" id='rowFrom'>
-            <form action="" style="display: block;">
+            <form action="" style="display: block;" id="frmEmpleados">
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <select name="usuario" id="" class="form-control">
+                        <select name="usuario"  class="form-control empleados">
                             <option value="0">--- Selecione un Tipo de Empleado ---</option>
                             {{#each usuario}}
                             <option value='{{usuarioId}}'>{{nombre}}</option>
@@ -28,27 +28,27 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="name" placeholder="Nombre">
+                        <input type="text" class="form-control empleados" name="name" placeholder="Nombre">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="apellido_p" placeholder="Apellido Paterno">
+                        <input type="text" class="form-control empleados" name="apellido_p" placeholder="Apellido Paterno">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="apellido_m" placeholder="Apellido Materno">
+                        <input type="text" class="form-control empleados" name="apellido_m" placeholder="Apellido Materno">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="date" name="happy_brithday" id="" class="form-control">
+                        <input type="date" name="happy_brithday"  class="form-control empleados">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="email" placeholder="Email">
+                        <input type="text" class="form-control empleados" name="email" placeholder="Email">
                     </div>
                 </div>
                 {{!-- <div class="col-lg-4">
@@ -60,17 +60,17 @@
                 </div> --}}
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="file" name="" id="" class="form-control">
+                        <input type="file" name="upload"  class="form-control empleados">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <textarea name="" id="" rows="2" class="form-control"></textarea>
+                        <textarea name="description"  rows="2" class="form-control empleados"></textarea>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <button type="button" class="btn btn-success">Guardar</button>
+                        <button type="button" class="btn btn-success" id='btnSave'>Guardar</button>
                         <button type="button" class="btn btn-secondary">Nuevo</button>
                     </div>
                 </div>

@@ -19,3 +19,6 @@ flex-direction: column;
 -ms-flex-wrap: nowrap;
 flex-wrap: nowrap; */
 }
+.danger-border{
+    border: 1px solid red!important;
+}

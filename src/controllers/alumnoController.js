@@ -15,7 +15,8 @@ alumnoController.save = async(req, res)=>{
         from: 'luis.segura@novasys.com.mx',
         to: email,
         subject: 'Bienvenido al sistema.',
-        text: 'Hola '+nombre+""+apellido_paterno+""+apellido_materno
+        text: 'Hola '+nombre+" "+apellido_paterno+" "+apellido_materno,
+        html:'<h1>Bienvenido al Sistema : "'+nombre+'"</h1>'
       };
       helpers.setEmail(mailOptions);
     if(isInsert.affectedRows ===1 ){
