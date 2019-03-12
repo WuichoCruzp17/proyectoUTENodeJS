@@ -15,10 +15,7 @@ helpers.matchPassword =async(password,savedPassword)=>{
     console.log(e)
   }
 };
-
 helpers.validateAccesousUsuario =async(req, res)=>{
-  
-
 };
 
 helpers.setEmail =(mailOptions)=>{

@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 var modsJS ={
     ini:function(){
         modsJS.buttons.setEventClickSeenForm();
+        modsJS.setComponentes();
     },
     buttons:{
         setEventClickSeenForm:function(){
@@ -25,6 +26,7 @@ var modsJS ={
         for(var i=0;i<$inputs.length;i++){
             switch($inputs[i].type){
                 case'file':
+                object[$inputs[i].name] = $inputs[i].value;
                 break;
                 case 'textarea':
                 object[$inputs[i].name] = $inputs[i].value;
@@ -62,5 +64,30 @@ var modsJS ={
         }).done(function (result) {
            
         });
+    },
+
+    setComponentes:function(){
+        modsJS.getEmpleados();//table-responsive
+    },
+        
+    getEmpleados:function(){
+        $.ajax({
+            method: "get",
+            url: "/ute/getEmpleados",
+            dataType: 'json'
+        }).done(function (result) {
+            console.log(result);
+            modsJS.getEmpleadosCallback(result);
+        });
+    },
+
+    getEmpleadosCallback:function(data){
+
+  util.gridUpdate({
+    script:'#grid-template',
+    element:"#demo",
+    columns:['NOMBRE','EMAIL',''],
+    data
+  });
     }
 };

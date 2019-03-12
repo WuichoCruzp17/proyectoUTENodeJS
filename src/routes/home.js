@@ -16,5 +16,6 @@ router.get('/ute/paginas',isLoggedIn, indexController.getViewAcceso);
 router.post('/ute/saveURL', isLoggedIn, linkController.save);
 router.get('/ute/empleados',isLoggedIn,validateAccesousUsuario,empleadosController.getViewEmpleados);
 router.post('/ute/saveEmpleado',isLoggedIn,validateAccesousUsuario,empleadosController.save);
+router.get('/ute/getEmpleados',isLoggedIn,validateAccesousUsuario, empleadosController.getEmpleados);
 module.exports = router;
 
