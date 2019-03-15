@@ -28,9 +28,14 @@ var modsJS ={
                 fechaNacimiento:null,
                 email:''
             }
+            /* watch:{
+                fechaNacimiento:function (fechaNacimiento) {
+                    fechaNacimiento = moment(new Date(fechaNacimiento)).format("YYYY-MM-DD")
+                    modsJS.setFecha(fechaNacimiento);
+                }
+            } */
         })
     },
-
     valideDatos:function(){
         const $frmEmpleados = document.getElementById('frmEmpleados');
         const $inputs = $frmEmpleados.querySelectorAll('.empleados');
@@ -67,8 +72,10 @@ var modsJS ={
             
         }
         if(c ===cV){
-            console.log(object);
-            modsJS.save(object);
+            if(object.empleadoId!==""){
+                modsJS.update(object);
+            }else{modsJS.save(object);}
+            
         }
     },  save: function (object) {
         $.ajax({
@@ -81,6 +88,16 @@ var modsJS ={
         });
     },
 
+    update:function(object){
+        $.ajax({
+            method: "POST",
+            url: "/ute/updateEmpleado",
+            data: object,
+            dataType: 'json'
+        }).done(function (result) {
+           
+        });
+    },
     setComponentes:function(){
         modsJS.getEmpleados();//table-responsive
     },
@@ -138,7 +155,11 @@ var modsJS ={
             temporal = key;
             key = modsJS.convertColumns( key.toLocaleLowerCase() );
             if(modsJS.fromEl.hasOwnProperty( key )){
-                modsJS.fromEl[key] = object[temporal];
+                if(key.split('fecha').length>1){
+                    modsJS.fromEl[key]= moment(new Date(object[temporal])).format("YYYY-MM-DD");
+                }else{
+                    modsJS.fromEl[key] = object[temporal];
+                } 
             }
         }
     },

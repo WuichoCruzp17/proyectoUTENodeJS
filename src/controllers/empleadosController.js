@@ -15,11 +15,10 @@ const user = req.body;
 user.usuario = parseInt(user.usuario);
 console.log(user);
 const row = await pool.query('INSERT INTO EMPLEADO VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', [
-    null,user.name,user.apellido_p, user.apellido_m, user.fechaNacimiento, user.email, 
+    null,user.name,user.apellidoPaterno, user.apellidoMaterno, user.fechaNacimiento, user.email, 
     user.upload, user.description,'luis', parseInt(user.usuario),1,1,null
 ]);
-const email =user.email;
-console.log(row);
+/* const email =user.email;
 if(row){
     var mailOptions = {
         from: user.email,
@@ -29,8 +28,14 @@ if(row){
         html:'<h1>Bienvenido al Sistema : "'+user.name+'"</h1>'
       };
       helpers.setEmail(mailOptions);
-}
+} */
 res.json({success:'exito', row});
+};
+
+empleadosController.update = async(req,res)=>{
+console.log(req.body);
+const row = await pool.query('UPDATE EMPLEADO SET NOMBRE = ?, APELLIDO_MATERNO = ?, APELLIDO_PATERNO =?, EMAIL =?,  UPLOAD =?, DESCRIPCION =?, ESTATUS_ID = ?, USUARIO_ID=? WHERE EMPLEADO_ID =?');
+res.json({success:'OK'});
 };
 
 empleadosController.getEmpleados = async (req, res)=>{
