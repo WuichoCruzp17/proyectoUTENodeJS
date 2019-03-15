@@ -1,7 +1,7 @@
 <head>
     <script src="../ute/js/empleado.js"></script>
     <style>
-        .arrow {
+ .arrow {
   display: inline-block;
   vertical-align: middle;
   width: 0;
@@ -70,9 +70,14 @@ th.active .arrow {
 
         <div class="row" id='rowFrom'>
             <form action="" style="display: block;" id="frmEmpleados">
+                <div class="col-lg-4 hidden">
+                    <div class="form-group">
+                        <input type="text" class="form-control empleados" name="empleadoId" v-model='empleadoId' placeholder="Nombre">
+                    </div>
+                </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <select name="usuario"  class="form-control empleados">
+                        <select name="usuario"  class="form-control empleados" v-model="usuarioId">
                             <option value="0">--- Selecione un Tipo de Empleado ---</option>
                             {{#each usuario}}
                             <option value='{{usuarioId}}'>{{nombre}}</option>
@@ -82,27 +87,27 @@ th.active .arrow {
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control empleados" name="name" placeholder="Nombre">
+                        <input type="text" class="form-control empleados" name="name" v-model='nombre' placeholder="Nombre">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control empleados" name="apellido_p" placeholder="Apellido Paterno">
+                        <input type="text" class="form-control empleados" name="apellidoPaterno" v-model='apellidoPaterno' placeholder="Apellido Paterno">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control empleados" name="apellido_m" placeholder="Apellido Materno">
+                        <input type="text" class="form-control empleados" name="apellidoMaterno" v-model="apellidoMaterno" placeholder="Apellido Materno">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="date" name="happy_brithday"  class="form-control empleados">
+                        <input type="date" name="fechaNacimiento" v-model="fechaNacimiento" class="form-control empleados">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <input type="text" class="form-control empleados" name="email" placeholder="Email">
+                        <input type="text" class="form-control empleados" name="email" v-model="email" placeholder="Email">
                     </div>
                 </div>
                 {{!-- <div class="col-lg-4">
@@ -124,39 +129,13 @@ th.active .arrow {
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <button type="button" class="btn btn-success" id='btnSave'>Guardar</button>
+                        <button type="button" class="btn btn-success" id='btnSave' v-on:click="modsJS.valideDatos()">Guardar</button>
                         <button type="button" class="btn btn-secondary">Nuevo</button>
                     </div>
                 </div>
             </form>
         </div>
         <div class="table-responsive">
-           {{!--  <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th style="width:266px;">Email</th>
-                        <th>Fecha de Nacimiento</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each empleados}}
-                    <tr>
-                        <td>{{NOMBRE}}</td>
-                        <td>{{EMAIL}}</td>
-                        <td>{{FECHA_NACIMIENTO}}</td>
-                        <td>
-                        <div class="from-group" style="margin:5px;">
-                            <button type="button" class="btn btn-primary">Editar</button>
-                        </div>
-                        <div class="form-group" style="margin:5px;">
-                            <button type="button" class="btn btn-danger">Dar de baja</button>
-                        </div>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table> --}}
 
            
         </div>
@@ -169,22 +148,19 @@ th.active .arrow {
                   
                   \:class="{ active: sortKey == key }">
                   \{{ key | capitalize }}
-                  <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+                  <template v-if="key !==''">
+                  <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'" >
+                  </template>
                   </span>
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="entry in filteredHeroes">
-                 {{!-- <td v-for="key in columns">
-                    \{{entry[key]}}
-
-                </td> --}}
-
                 <td>\{{entry['NOMBRE']}}</td>
                 <td>\{{entry['EMAIL']}}</td>
                 <td>
-                    <button type='button' class="btn btn-primary">Editar</button>
+                    <button type='button' class="btn btn-primary"  v-on:click='getObject(entry["EMPLEADO_ID"])' >Editar</button>
                     <button type='button'    class="btn btn-danger">Eliminar</button>
                 </td>
               </tr>

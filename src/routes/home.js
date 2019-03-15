@@ -17,5 +17,6 @@ router.post('/ute/saveURL', isLoggedIn, linkController.save);
 router.get('/ute/empleados',isLoggedIn,validateAccesousUsuario,empleadosController.getViewEmpleados);
 router.post('/ute/saveEmpleado',isLoggedIn,validateAccesousUsuario,empleadosController.save);
 router.get('/ute/getEmpleados',isLoggedIn,validateAccesousUsuario, empleadosController.getEmpleados);
+router.get('/ute/getEmpleadoFindById/:empleadoId', isLoggedIn, validateAccesousUsuario, empleadosController.getEmpleadoFindById)
 module.exports = router;
 

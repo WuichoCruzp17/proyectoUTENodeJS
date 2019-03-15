@@ -15,7 +15,7 @@ const user = req.body;
 user.usuario = parseInt(user.usuario);
 console.log(user);
 const row = await pool.query('INSERT INTO EMPLEADO VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', [
-    null,user.name,user.apellido_p, user.apellido_m, user.happy_brithday, user.email, 
+    null,user.name,user.apellido_p, user.apellido_m, user.fechaNacimiento, user.email, 
     user.upload, user.description,'luis', parseInt(user.usuario),1,1,null
 ]);
 const email =user.email;
@@ -38,4 +38,10 @@ empleadosController.getEmpleados = async (req, res)=>{
     res.json(empleados);
 };
 
+empleadosController.getEmpleadoFindById = async (req, res) =>{
+    console.log(req.params);
+    const empleado = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [ parseInt(req.params.empleadoId)]);
+    console.log(empleado);
+    res.json(empleado[0]);
+};
 module.exports = empleadosController;

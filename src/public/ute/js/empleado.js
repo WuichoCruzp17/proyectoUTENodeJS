@@ -6,6 +6,7 @@ var modsJS ={
     ini:function(){
         modsJS.buttons.setEventClickSeenForm();
         modsJS.setComponentes();
+        modsJS.from();
     },
     buttons:{
         setEventClickSeenForm:function(){
@@ -14,6 +15,20 @@ var modsJS ={
                 modsJS.valideDatos();
             });
         }
+    },
+    from:function(){
+     modsJS.fromEl =    util.createVueFrom({
+            el:'#frmEmpleados',
+            data:{
+                empleadoId:0,
+                usuarioId:0,
+                nombre:'',
+                apellidoPaterno:'',
+                apellidoMaterno:'',
+                fechaNacimiento:null,
+                email:''
+            }
+        })
     },
 
     valideDatos:function(){
@@ -82,12 +97,69 @@ var modsJS ={
     },
 
     getEmpleadosCallback:function(data){
-
-  util.gridUpdate({
+    modsJS.grid =  utilGrid.createGrid({
     script:'#grid-template',
     element:"#demo",
     columns:['NOMBRE','EMAIL',''],
-    data
+    data,
+    component:modsJS.getComponent()
   });
+    },
+
+    getComponent:function(){
+          utilGrid.methods.getObject  = modsJS.getEmpleado;
+          return {
+              template:'#grid-template',
+              props:    utilGrid.propsDefault,
+              data: utilGrid.dataDefault,
+              component: utilGrid.component,
+              computed: utilGrid.computed,
+              filters: utilGrid.filters,
+              methods: utilGrid.methods
+
+          }
+    },
+
+    getEmpleado:function(empleadoId){
+        var obj = {empleadoId};
+        $.ajax({
+            method: "GET",
+            url: "/ute/getEmpleadoFindById/"+empleadoId,
+            dataType: 'json'
+        }).done(function (result) {
+            console.log(result);
+            modsJS.updateFrom(result);
+        });
+    },
+
+    updateFrom:function(object){
+        var temporal="";
+        for(key in object) {
+            temporal = key;
+            key = modsJS.convertColumns( key.toLocaleLowerCase() );
+            if(modsJS.fromEl.hasOwnProperty( key )){
+                modsJS.fromEl[key] = object[temporal];
+            }
+        }
+    },
+
+    validateUnderScript:function(string){
+        return string.split('_').length>1 ? true:false;
+    },
+
+    convertColumns:function(column){
+        if(modsJS.validateUnderScript(column)){
+            const arr = column.split('_');
+          return   column = arr[0]+ modsJS.getFirstCapitalLetter(arr[1]);
+        }else{return column;}
+    },
+
+    getFirstCapitalLetter:function(letter){
+        const arr = letter.split('');
+        var string ="";
+        for(var i=0; i<arr.length;i++){
+            string  += (i===0) ? arr[i].toLocaleUpperCase() : arr[i];
+        }
+        return string;
     }
 };
