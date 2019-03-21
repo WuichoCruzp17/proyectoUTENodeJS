@@ -32,4 +32,48 @@
             </div>
         </form>
     </div>
+    <div class="table-responsive">
+
+           
+        </div>
+<script type="text/x-template" id="grid-template">
+          <table class="table">
+            <thead>
+              <tr>
+                <th v-for="key in columns"
+                  @click="sortBy(key)" 
+                  
+                  \:class="{ active: sortKey == key.name }">
+                   
+                  <template v-if="key.name !==''">
+                   \{{ key.name | capitalize }}
+                  <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'" > </span>
+                  </template>
+                 
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="entry in filteredHeroes">
+                <td>\{{entry['NOMBRE']}}</td>
+                <td>\{{entry['URL']}}</td>
+                <td>\{{entry['DESCRIPCION']}}</td>
+                <td>
+                    <button type='button' class="btn btn-primary"  v-on:click='getObject(entry["EMPLEADO_ID"])' >Editar</button>
+                    <button type='button'    class="btn btn-danger">Eliminar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </script>
+         <div id="demo">
+          <form id="search" style="margin-bottom:5px">
+            Search <input name="query" v-model="searchQuery" class="form-control">
+          </form>
+          <demo-grid
+            :heroes="gridData"
+            :columns="gridColumns"
+            :filter-key="searchQuery">
+          </demo-grid>
+    </div>
 </div>

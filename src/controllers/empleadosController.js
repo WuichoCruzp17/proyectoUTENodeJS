@@ -5,15 +5,12 @@ const empleadosController ={};
 empleadosController.getViewEmpleados =async (req, res)=>{
     const usuario = await pool.query('SELECT USUARIO_ID AS usuarioId, NOMBRE AS nombre FROM USUARIO');
     const empleados = await pool.query('SELECT * FROM EMPLEADO WHERE ESTATUS_ID=1 AND ELIMINADO_ID=1 AND USUARIO_ID >1');
-    console.log(empleados);
-    console.log(usuario);
     res.render('ute/empleados',{usuario});
 };
 empleadosController.save =async(req,res)=>{
 
 const user = req.body;
 user.usuario = parseInt(user.usuario);
-console.log(user);
 const row = await pool.query('INSERT INTO EMPLEADO VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', [
     null,user.name,user.apellidoPaterno, user.apellidoMaterno, user.fechaNacimiento, user.email, 
     user.upload, user.description,'luis', parseInt(user.usuario),1,1,null
@@ -33,8 +30,9 @@ res.json({success:'exito', row});
 };
 
 empleadosController.update = async(req,res)=>{
-console.log(req.body);
-const row = await pool.query('UPDATE EMPLEADO SET NOMBRE = ?, APELLIDO_MATERNO = ?, APELLIDO_PATERNO =?, EMAIL =?,  UPLOAD =?, DESCRIPCION =?, ESTATUS_ID = ?, USUARIO_ID=? WHERE EMPLEADO_ID =?');
+const {empleadoId, usuario, name, apellidoPaterno, apellidoMaterno, email, upload, description} = req.body;
+const row = await pool.query('UPDATE EMPLEADO SET NOMBRE = ?, APELLIDO_MATERNO = ?, APELLIDO_PATERNO =?, EMAIL =?,  UPLOAD =?, DESCRIPCION =?,  USUARIO_ID=? WHERE EMPLEADO_ID =?',
+[name,apellidoMaterno, apellidoPaterno,email,upload,description, usuario, empleadoId]);
 res.json({success:'OK'});
 };
 
@@ -46,7 +44,6 @@ empleadosController.getEmpleados = async (req, res)=>{
 empleadosController.getEmpleadoFindById = async (req, res) =>{
     console.log(req.params);
     const empleado = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [ parseInt(req.params.empleadoId)]);
-    console.log(empleado);
     res.json(empleado[0]);
 };
 module.exports = empleadosController;

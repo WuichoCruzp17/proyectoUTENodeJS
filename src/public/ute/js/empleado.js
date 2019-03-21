@@ -3,10 +3,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 
 var modsJS ={
+    grid:null,
     ini:function(){
         modsJS.buttons.setEventClickSeenForm();
         modsJS.setComponentes();
         modsJS.from();
+        modsJS.grid =  utilGrid.createGrid({
+            script:'#grid-template',
+            element:"#demo",
+            columns:[
+                {name:'NOMBRE'},{name:'EMAIL'},{name:''}
+            ],
+            data:[],
+            component:modsJS.getComponent()
+          });
     },
     buttons:{
         setEventClickSeenForm:function(){
@@ -95,7 +105,10 @@ var modsJS ={
             data: object,
             dataType: 'json'
         }).done(function (result) {
-           
+           if(result){
+            util.clenFrom(modsJS.fromEl._data);
+            modsJS.getEmpleados();
+           }
         });
     },
     setComponentes:function(){
@@ -114,13 +127,8 @@ var modsJS ={
     },
 
     getEmpleadosCallback:function(data){
-    modsJS.grid =  utilGrid.createGrid({
-    script:'#grid-template',
-    element:"#demo",
-    columns:['NOMBRE','EMAIL',''],
-    data,
-    component:modsJS.getComponent()
-  });
+            modsJS.grid._data.gridData = []
+            modsJS.grid._data.gridData =data;
     },
 
     getComponent:function(){
@@ -145,20 +153,20 @@ var modsJS ={
             dataType: 'json'
         }).done(function (result) {
             console.log(result);
-            modsJS.updateFrom(result);
+            util.updateFrom(modsJS.fromEl,result);
         });
     },
 
-    updateFrom:function(object){
+    updateFrom:function(vuFrom,object){
         var temporal="";
         for(key in object) {
             temporal = key;
             key = modsJS.convertColumns( key.toLocaleLowerCase() );
-            if(modsJS.fromEl.hasOwnProperty( key )){
+            if(vuFrom.hasOwnProperty( key )){
                 if(key.split('fecha').length>1){
-                    modsJS.fromEl[key]= moment(new Date(object[temporal])).format("YYYY-MM-DD");
+                    vuFrom[key]= moment(new Date(object[temporal])).format("YYYY-MM-DD");
                 }else{
-                    modsJS.fromEl[key] = object[temporal];
+                    vuFrom[key] = object[temporal];
                 } 
             }
         }

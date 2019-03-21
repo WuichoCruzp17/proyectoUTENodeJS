@@ -1,6 +1,5 @@
 var util ={
   
-    
   isTheProperty:function(object,nameProperty){
     return (object.hasOwnProperty(nameProperty));
   },
@@ -11,7 +10,50 @@ var util ={
         methods: util.isTheProperty(object, 'methods') ? object.methods :null,
       }) */
       return new Vue(object);
-    }
+    },
+
+    clenFrom:function(object){
+      for(key in object){
+        if(utilString.validateString(object[key])){
+          object[key] = '';
+        }else{object[key] = 0;}
+      }
+    },
+    updateFrom:function(vuFrom,object){
+      var temporal="";
+      for(key in object) {
+          temporal = key;
+          key = modsJS.convertColumns( key.toLocaleLowerCase() );
+          if(vuFrom.hasOwnProperty( key )){
+              if(key.split('fecha').length>1){
+                  vuFrom[key]= moment(new Date(object[temporal])).format("YYYY-MM-DD");
+              }else{
+                  vuFrom[key] = object[temporal];
+              } 
+          }
+      }
+  },
+  
+  validateUnderScript:function(string){
+      return string.split('_').length>1 ? true:false;
+  },
+  
+  convertColumns:function(column){
+      if(util.validateUnderScript(column)){
+          const arr = column.split('_');
+        return   column = arr[0]+ util.getFirstCapitalLetter(arr[1]);
+      }else{return column;}
+  },
+  
+  getFirstCapitalLetter:function(letter){
+      const arr = letter.split('');
+      var string ="";
+      for(var i=0; i<arr.length;i++){
+          string  += (i===0) ? arr[i].toLocaleUpperCase() : arr[i];
+      }
+      return string;
+  }
+
 
 };
 
@@ -63,8 +105,8 @@ var utilGrid ={
       }
       if (sortKey) {
         heroes = heroes.slice().sort(function (a, b) {
-          a = a[sortKey]
-          b = b[sortKey]
+          a = a[sortKey.name]
+          b = b[sortKey.name]
           return (a === b ? 0 : a > b ? 1 : -1) * order
         })
       }
@@ -97,4 +139,10 @@ var utilGrid ={
 
         return demo;
   }
-}
+};
+
+var utilString = {
+  validateString: function (obj) {
+    return Object.prototype.toString.call(obj) === '[object String]';
+  }
+ };
