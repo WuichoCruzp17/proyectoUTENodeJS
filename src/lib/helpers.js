@@ -2,6 +2,7 @@ const bcryptjs =    require('bcryptjs');
 const pool =    require('../database');
 const {email} = require('../keys');
 var nodemailer = require('nodemailer');
+const userSession = require('../models/session');
 const helpers ={};
 helpers.encryptPassword= async (password)=>{
   const salt = await bcryptjs.genSalt(10);
@@ -28,6 +29,13 @@ transporter.sendMail(mailOptions, function(error, info){
     console.log('Email sent: ' + info.response);
   }
 });
+};
+
+helpers.setFunctions = (user) =>{
+    for(var key in userSession){
+      user[key] = userSession[key];
+    }
+    return user;
 };
 
 module.exports = helpers;
