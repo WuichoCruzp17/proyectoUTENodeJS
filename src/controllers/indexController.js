@@ -18,7 +18,6 @@ indexController.validateSession = async(req,res, next)=>{
       })(req, res, next);
 };
 indexController.getIndexAdministrador =(req,res, next)=>{
-    console.log(req.user.getEdad());
     res.render('ute/index');
 };
 indexController.getViewMaestros =(req,res)=>{

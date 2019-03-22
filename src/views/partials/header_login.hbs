@@ -12,24 +12,18 @@
 <a class="social" href="#"><i class="fa fa-google-plus"></i></a>
 <a class="social" href="#"><i class="fa fa-linkedin"></i></a>
 </li>
+{{#if user}}
 <li class="dropdown">
-<a class="dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-lock"></i> Login &amp; Register</a>
-<div class="dropdown-menu">
-<form method="post">
+<a class="dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-user"></i> {{ fullName user}}</a>
+<div class="dropdown-menu"> <!--Modificar para mostrar la información del usario -->
 <div class="form-title">
 <h4>Login Area</h4>
 <hr>
 </div>
-<input class="form-control" type="text" name="username" placeholder="User Name">
-<div class="formpassword">
-<input class="form-control" type="password" name="password" placeholder="******">
-</div>
-<div class="clearfix"></div>
-<button type="submit" class="btn btn-block btn-primary">Login</button>
 <hr>
 <h4><a href="#">Create an Account</a></h4>
-</form>
 </div>
+{{/if}}
 </li>
 </ul>
 </div>

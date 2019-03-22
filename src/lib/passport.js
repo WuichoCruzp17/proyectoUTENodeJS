@@ -22,10 +22,6 @@ passport.use('local.signin', new LocalStrategy({
          const validPassword =  await  helpers.matchPassword(password, user.PASSWORD);
          /* console.log(validPassword); */
          if(validPassword){
-             console.log('Usuario valido');
-             user.fullName = function(){
-                return `${this.NOMBRE} ${this.APELLIDO_PATERNO} ${this.APELLIDO_MATERNO}`;
-            }
              done(null,  user, req.flash('success','Welcome'+user.NOMBRE));
          }else{
              done(null, false, req.flash('message','Incorrect Password'));
@@ -42,7 +38,6 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, username, password, done) => {
-    console.log(req.body);
     console.log("Despues de validar el usuario LocalStrategy");
     var newUser ={};
     switch(req.body.USUARIO_ID){
@@ -63,19 +58,36 @@ passport.use('local.signup', new LocalStrategy({
 /**
  * Función que se encarga de guardar la session del usuario
  */
-passport.serializeUser((user, done) => {
-    console.log("Despues de Valiar el usuario", "Done: ", done);
+passport.serializeUser(async (user, done) => {
+    console.log("Usuario Serelize User: ", user);
     switch(user.USUARIO_ID){
         case 1:
-        done(null, user.EMPLEADO_ID);
+        user.page = await pool.query('SELECT PAGINA.NOMBRE, PAGINA.URL FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?', [user.USUARIO_ID]);
+        console.log("Serealize",user);
+        done(null, user);
         break;
     }
 });
 /**
  * Función que se encarga de validar si hay una cuenta de usuaria existente.
  */
-passport.deserializeUser(async (id, done) => {
-    var rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [id]);
-    rows= helpers.setFunctions(rows[0]);
-    done(null, rows);
+passport.deserializeUser(async (user, done) => {
+    
+    var rows = null;
+    console.log("Entro: ",user);
+    if(typeof user !=="object"){
+        console.log("Entro");
+        if(user.hasOwnProperty('EMPLEADO_ID')){
+           
+            rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [user.EMPLEADO_ID]);
+            rows= helpers.setFunctions(rows[0]);
+            rows.pages = await pool.query('SELECT PAGINA.NOMBRE, PAGINA.URL FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?', [user.USUARIO_ID]);
+            console.log('Usuario: ',row);
+            done(null, rows);
+        }else if(user.hasOwnProperty('ALUMNO_ID')){
+
+        }
+    }
+     
+    done(null, user);
 });

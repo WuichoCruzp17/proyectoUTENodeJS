@@ -13,8 +13,9 @@ const utilModels = require('./modelUtil');
 
 const user ={};
 user.fullName = function(){
+    console.log(this);
     return `${this.NOMBRE} ${this.APELLIDO_PATERNO} ${this.APELLIDO_MATERNO}`;
 };
 
-user.getEdad = utilModels.calcularEdad;
+user.getAge = utilModels.calcularEdad;
 module.exports =  user;
