@@ -15,9 +15,15 @@
 {{#if user}}
 <li class="dropdown">
 <a class="dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-user"></i> {{ fullName user}}</a>
-<div class="dropdown-menu"> <!--Modificar para mostrar la información del usario -->
+<div class="dropdown-menu">
+ <!--Modificar para mostrar la información del usario -->
 <div class="form-title">
-<h4>Login Area</h4>
+<div style="display:flex; align-items: center;     justify-content: space-between;">
+<img src="../../images/apple-touch-icon-57x57.png" alt="imagen" class="float-center">   
+</div>
+
+<h4>Correo: {{user.EMAIL}}</h4>
+<h4>Edad: {{getAge user.FECHA_NACIMIENTO}}</h4>
 <hr>
 </div>
 <hr>

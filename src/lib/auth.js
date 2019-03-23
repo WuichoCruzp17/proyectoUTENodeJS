@@ -14,10 +14,22 @@ module.exports = {
         }
      },
      validateAccesousUsuario(req, res, next){
-         /* console.log(req.user); */
-        console.log(req.user.USUARIO_ID===1);
-        if(req.user.USUARIO_ID===1){
-          return next();
-        }
+         const url = req.url;
+         console.log(url);
+         if(req.user.hasOwnProperty('EMPLEADO_ID')){
+             console.log("Entro a la propiedad");
+            const pages = req.user.page;
+            if(pages !== undefined)
+
+            for(var i=0; i<pages.length;i++){
+                if(pages[i].URL === url){
+                    return next();
+                }
+            }
+            return res.redirect('/ute/index');
+         }
+        
+            
+        
      }
 };

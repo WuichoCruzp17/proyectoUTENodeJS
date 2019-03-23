@@ -74,7 +74,6 @@ passport.serializeUser(async (user, done) => {
 passport.deserializeUser(async (user, done) => {
     
     var rows = null;
-    console.log("Entro: ",user);
     if(typeof user !=="object"){
         console.log("Entro");
         if(user.hasOwnProperty('EMPLEADO_ID')){

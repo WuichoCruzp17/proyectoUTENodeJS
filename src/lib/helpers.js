@@ -3,6 +3,7 @@ const pool =    require('../database');
 const {email} = require('../keys');
 var nodemailer = require('nodemailer');
 const userSession = require('../models/session');
+const utilModel = require('../models/modelUtil');
 const helpers ={};
 helpers.encryptPassword= async (password)=>{
   const salt = await bcryptjs.genSalt(10);
@@ -36,6 +37,13 @@ helpers.setFunctions = (user) =>{
       user[key] = userSession[key];
     }
     return user;
+};
+
+helpers.setFunctionsModels = (e) =>{
+  for(var key in utilModel){
+    e[key] = utilModel[key];
+  }
+  return e;
 };
 
 module.exports = helpers;

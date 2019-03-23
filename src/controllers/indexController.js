@@ -1,5 +1,6 @@
 const pool =    require('../database');
 const passport = require('passport');
+const pagina = require('../models/pagina');
 const indexController = {};
 
 indexController.getIndex =(req,res)=>{
@@ -23,7 +24,9 @@ indexController.getIndexAdministrador =(req,res, next)=>{
 indexController.getViewMaestros =(req,res)=>{
     res.render('ute/maestros');
 };
-indexController.getViewAcceso = (req, res)=>{
+indexController.getViewAcceso = async (req, res)=>{
+    const _obj=  pagina;
+    console.log("Consulta" ,await _obj.findById(1));
     res.render('ute/paginas');
 };
 module.exports =indexController;
