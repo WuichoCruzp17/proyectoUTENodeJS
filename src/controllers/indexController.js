@@ -1,14 +1,26 @@
 const pool =    require('../database');
 const passport = require('passport');
 const pagina = require('../models/pagina');
+const usuario = require('../models/usuario');
+const empleado = require('../models/empleado');
 const indexController = {};
 
-indexController.getIndex =(req,res)=>{
+indexController.getIndex =async (req,res)=>{
+    console.log(await pagina.findById(1));
+    console.log(await pagina.update({ columns:{
+        nombre:{
+            column:pagina.columns.nombre.column,
+            value:'Luis Segura'
+        },
+        descripcion:{
+            column:pagina.columns.descripcion.column,
+            value:"Nueva"
+        }
+    }}));
     res.render('index');
 };
 
 indexController.getLogin =async(req,res)=>{
-    const usuario = await pool.query('SELECT USUARIO_ID AS usuarioId, NOMBRE AS nombre FROM USUARIO');
     res.render('ute/login',{usuario});
 };
 indexController.validateSession = async(req,res, next)=>{

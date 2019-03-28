@@ -11,7 +11,8 @@ passport.use('local.signin', new LocalStrategy({
     var  rows =null;
     switch(usuarioId){
         case 1:
-        rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMAIL = ? ',[req.body.username]);
+        try{rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMAIL = ? ',[req.body.username]);}catch(err){console.log(err); row =[];}
+        
         break;
     }
     if(rows.length>0){

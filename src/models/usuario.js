@@ -2,25 +2,24 @@ const helpers = require('../lib/helpers');
 let usuario ={};
 
 usuario.table ={
-    name:'USUARIO_ID'   
+    name:'USUARIO'   
 };
 
-usuario.usuarioId ={
-    column:'USUARIO_ID',
-    primarykey:true
-};
-usuario.nombre = {
-    column: 'NOMBRE'
-};
+usuario.columns={
+    usuarioId:{
+        column:'USUARIO_ID',
+        primarykey:true
+    },
+    nombre:{
+        column: 'NOMBRE'
+    },
 
-usuario.apellidoPaterno ={
-    column:'APELLIDO_PATERNO'
-};
+    descripcion:{
+        column:'DESCRIPCION'
+    }
+}
 
-pagina.apellidoMaterno={
-    column:'APELLIDO_MATERNO'
-};
 
-pagina = helpers.setFunctionsModels(pagina);
+usuario = helpers.setFunctionsModels(usuario);
 
-module.exports = pagina;
+module.exports = usuario;
