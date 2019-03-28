@@ -18,6 +18,10 @@ getFirstCapitalLetter:function(letter){
         string  += (i===0) ? arr[i].toLocaleUpperCase() : arr[i];
     }
     return string;
+},
+
+validateObjetc = function(obj){
+    return Object.prototype.toString.call(obj) === '[object Object]';
 }
 };
 
