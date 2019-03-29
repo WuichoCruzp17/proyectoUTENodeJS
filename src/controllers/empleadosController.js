@@ -1,10 +1,12 @@
 const pool =    require('../database');
 const passport = require('passport');
 const helpers = require('../lib/helpers');
+const empleado = require('../models/empleado');
+const bdComponents = require('../utilsModels/bdComponents');
 const empleadosController ={};
 empleadosController.getViewEmpleados =async (req, res)=>{
     const usuario = await pool.query('SELECT USUARIO_ID AS usuarioId, NOMBRE AS nombre FROM USUARIO');
-    const empleados = await pool.query('SELECT * FROM EMPLEADO WHERE ESTATUS_ID=1 AND ELIMINADO_ID=1 AND USUARIO_ID >1');
+    //const empleados = await pool.query('SELECT * FROM EMPLEADO WHERE ESTATUS_ID=1 AND ELIMINADO_ID=1 AND USUARIO_ID >1');
     res.render('ute/empleados',{usuario});
 };
 empleadosController.save =async(req,res)=>{
@@ -37,13 +39,31 @@ res.json({success:'OK'});
 };
 
 empleadosController.getEmpleados = async (req, res)=>{
+    console.log("EMPLEADOS");
     const empleados = await pool.query('SELECT EMPLEADO_ID, CONCAT(NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO) AS NOMBRE, EMAIL FROM EMPLEADO WHERE ESTATUS_ID=1 AND ELIMINADO_ID=1 AND USUARIO_ID >1');
-    res.json(empleados);
+   // console.log( await empleado.executeQuery(`SELECT ${empleado.columns.empleadoId.column}, ${bdComponents.functions.CONCAT(['NOMBRE','APELLIDO_PATERNO','APELLIDO_MATERNO'],'NOMBRE')}, EMAAIL FROM EMPLEADO WHERE ESTATUS=1 AND USUARIO_ID>1`  ));
+  // console.log( await empleado.select(`${empleado.columns.empleadoId.column}, ${bdComponents.functions.CONCAT(['NOMBRE','APELLIDO_PATERNO','APELLIDO_MATERNO'],'NOMBRE')}, EMAIL`,'WHERE ESTATUS_ID=1 AND USUARIO_ID>1'));
+   res.json(empleados);
 };
 
 empleadosController.getEmpleadoFindById = async (req, res) =>{
     console.log(req.params);
-    const empleado = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [ parseInt(req.params.empleadoId)]);
-    res.json(empleado[0]);
+    var cols = {
+        columns:{
+            nombre:empleado.columns.nombre,
+            apellidoPaterno:empleado.columns.apellidoPaterno,
+            apellidoMaterno:empleado.columns.apellidoMaterno,
+            fechaNacimiento:empleado.columns.fechaNacimiento,
+            upload:empleado.columns.upload,
+            descripcion:empleado.columns.descripcion,
+            email:empleado.columns.email
+        }
+    }
+    //const empleado = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [ parseInt(req.params.empleadoId)]);
+    const obj = await empleado.findById(req.params.empleadoId, {columns:{
+        nombre:empleado.columns.nombre,
+        descripcion:empleado.columns.descripcion
+    }});
+    res.json(obj);
 };
 module.exports = empleadosController;

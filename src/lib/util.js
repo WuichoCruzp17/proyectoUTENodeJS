@@ -20,7 +20,7 @@ getFirstCapitalLetter:function(letter){
     return string;
 },
 
-validateObjetc = function(obj){
+validateObjetc:function(obj){
     return Object.prototype.toString.call(obj) === '[object Object]';
 }
 };

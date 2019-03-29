@@ -16,12 +16,8 @@ passport.use('local.signin', new LocalStrategy({
         break;
     }
     if(rows.length>0){
-        /* console.log(req.body);
-        console.log(rows); */
         const user = rows[0];
-        /* console.log('password: ',password, 'userPassword:', user.PASSWORD); */
          const validPassword =  await  helpers.matchPassword(password, user.PASSWORD);
-         /* console.log(validPassword); */
          if(validPassword){
              done(null,  user, req.flash('success','Welcome'+user.NOMBRE));
          }else{
@@ -60,7 +56,7 @@ passport.use('local.signup', new LocalStrategy({
  * Función que se encarga de guardar la session del usuario
  */
 passport.serializeUser(async (user, done) => {
-    console.log("Usuario Serelize User: ", user);
+   // console.log("Usuario Serelize User: ", user);
     switch(user.USUARIO_ID){
         case 1:
         user.page = await pool.query('SELECT PAGINA.NOMBRE, PAGINA.URL FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?', [user.USUARIO_ID]);
@@ -76,13 +72,11 @@ passport.deserializeUser(async (user, done) => {
     
     var rows = null;
     if(typeof user !=="object"){
-        console.log("Entro");
         if(user.hasOwnProperty('EMPLEADO_ID')){
            
             rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [user.EMPLEADO_ID]);
             rows= helpers.setFunctions(rows[0]);
             rows.pages = await pool.query('SELECT PAGINA.NOMBRE, PAGINA.URL FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?', [user.USUARIO_ID]);
-            console.log('Usuario: ',row);
             done(null, rows);
         }else if(user.hasOwnProperty('ALUMNO_ID')){
 

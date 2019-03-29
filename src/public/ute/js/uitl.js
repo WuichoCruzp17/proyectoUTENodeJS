@@ -23,12 +23,12 @@ var util ={
       var temporal="";
       for(key in object) {
           temporal = key;
-          key = modsJS.convertColumns( key.toLocaleLowerCase() );
+          //key = modsJS.convertColumns( key.toLocaleLowerCase() );
           if(vuFrom.hasOwnProperty( key )){
               if(key.split('fecha').length>1){
-                  vuFrom[key]= moment(new Date(object[temporal])).format("YYYY-MM-DD");
+                  vuFrom[key]= moment(new Date(object[key])).format("YYYY-MM-DD");
               }else{
-                  vuFrom[key] = object[temporal];
+                  vuFrom[key] = object[key];
               } 
           }
       }

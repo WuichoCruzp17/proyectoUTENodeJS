@@ -3,7 +3,7 @@ const pool =    require('../database');
 const {email} = require('../keys');
 var nodemailer = require('nodemailer');
 const userSession = require('../models/session');
-const utilModel = require('../models/modelUtil');
+const utilModel = require('../utilsModels/modelUtil');
 const helpers ={};
 helpers.encryptPassword= async (password)=>{
   const salt = await bcryptjs.genSalt(10);

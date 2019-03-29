@@ -25,6 +25,10 @@ empleado.columns={
         column:'FECHA_NACIMIENTO'
     },
 
+    email:{
+        column:'EMAIL'
+    },
+    
     upload:{
         column:'UPLOAD'
     },

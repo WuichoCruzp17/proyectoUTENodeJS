@@ -17,8 +17,8 @@ router.post('/ute/saveURL', isLoggedIn, linkController.save);
 router.get('/ute/getPages', isLoggedIn, linkController.getPages);
 router.get('/ute/empleados',isLoggedIn,validateAccesousUsuario,empleadosController.getViewEmpleados);
 router.post('/ute/saveEmpleado',isLoggedIn,validateAccesousUsuario,empleadosController.save);
-router.post('/ute/updateEmpleado',isLoggedIn,validateAccesousUsuario,empleadosController.update);
-router.get('/ute/getEmpleados',isLoggedIn,validateAccesousUsuario, empleadosController.getEmpleados);
-router.get('/ute/getEmpleadoFindById/:empleadoId', isLoggedIn, validateAccesousUsuario, empleadosController.getEmpleadoFindById)
+router.post('/ute/updateEmpleado',isLoggedIn,empleadosController.update);
+router.get('/ute/getEmpleados',isLoggedIn, empleadosController.getEmpleados);
+router.get('/ute/getEmpleadoFindById/:empleadoId', isLoggedIn, empleadosController.getEmpleadoFindById)
 module.exports = router;
 

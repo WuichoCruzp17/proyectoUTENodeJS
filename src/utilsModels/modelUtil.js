@@ -44,8 +44,8 @@ utilModel.update = async function(columns, objectId){
  * @param {Object} columns Son las columnas que se buscan de ese objeto. No es requerido
  */
 utilModel.findById = async function(objectId,columns){
-    try{const row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} 
-                WHERE ${this.getColumn(this.columns,'primarykey')} = ?`,[objectId]);
+    console.log("Find: ", columns);
+    try{const row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.getColumn(this.columns,'primarykey')} = ?`,[objectId]);
                 if(row){
                     return row[0];
                 }
@@ -65,13 +65,6 @@ utilModel.findAll = async function(columns){
     }catch(err){console.log(err); return null;}
 };
 
-utilModel.executeQueryWithObjetc = async function(object){
-    const inputs = (object.hasOwnProperty('inputs')) ? object.params:null;
-    const type = object.type;
-    switch(type){
-
-    }
-};
 
 /**
  * Función que se encarga de obtener una columna de un objeto.
@@ -94,16 +87,17 @@ utilModel.getColumn  =function(e, typeColumn){
 utilModel.getColumnString =function(cols){
     var nameColumns ="";
     const columns = (cols !== undefined && cols!==null) ? cols:this.columns;
+    console.log("COLUMNS: ",columns);
     const c = this.getNumColumns(columns)-1;
     var i=0;
     for(var key in columns){
+        console.log(key);
         nameColumns+= (i<c) ? columns[key].column + " as " +key +", ":columns[key].column + " as " +key;
 	i++;
 
 }
 console.log(nameColumns);
-return nameColumns;
-    
+return nameColumns;  
 }
 /**
  * Función que se encarga de obtener el número de columnas de un objeto.
@@ -161,6 +155,19 @@ utilModel.executeQuery = async function(query){
         return (row) ? row:null;
     }catch(err){console.log(err); return null;}
 };
+
+utilModel.select  = async function(columns, complement){
+    try{
+        var query = "SELECT";
+        query +=(columns !== undefined && columns != null) ? ` ${columns} ` :" * ";
+        query +=`FROM ${this.table.name} `
+        query +=(complement !== undefined && complement !== null) ?  ` ${complement} `:'';
+        const row = pool.query(query);
+    }catch(err){
+        console.log(err);
+        return null;
+    }
+};
 /**Ejemplo de como setear las columnas cuando se solicite ciertas columnas de una tabla
  *  var cols = {
         columns:{
@@ -179,6 +186,7 @@ utilModel.executeQuery = async function(query){
             value:"'Administrador de las paginas'"
         }
     }},{column:pagina.columns.paginaId.column, value:1}
+
  */
 
 module.exports = utilModel;

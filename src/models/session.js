@@ -1,4 +1,4 @@
-const utilModels = require('./modelUtil');
+const utilModels = require('../utilsModels/modelUtil');
 /* function user(){
 
     this.usuarioId = null;
