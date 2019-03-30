@@ -2,11 +2,12 @@ const pool =    require('../database');
 const passport = require('passport');
 const helpers = require('../lib/helpers');
 const empleado = require('../models/empleado');
+const usuarioController = require('./usuarioController');
 const bdComponents = require('../utilsModels/bdComponents');
 const empleadosController ={};
 empleadosController.getViewEmpleados =async (req, res)=>{
-    const usuario = await pool.query('SELECT USUARIO_ID AS usuarioId, NOMBRE AS nombre FROM USUARIO');
-    //const empleados = await pool.query('SELECT * FROM EMPLEADO WHERE ESTATUS_ID=1 AND ELIMINADO_ID=1 AND USUARIO_ID >1');
+    //const usuario = await pool.query('SELECT USUARIO_ID AS usuarioId, NOMBRE AS nombre FROM USUARIO');
+   const usuario = await usuarioController.getUsuariosDinamic('USUARIO_ID AS usuarioId, NOMBRE AS nombre','WHERE USUARIO_ID != 2');
     res.render('ute/empleados',{usuario});
 };
 empleadosController.save =async(req,res)=>{
@@ -47,9 +48,7 @@ empleadosController.getEmpleados = async (req, res)=>{
 };
 
 empleadosController.getEmpleadoFindById = async (req, res) =>{
-    console.log(req.params);
     var cols = {
-        columns:{
             nombre:empleado.columns.nombre,
             apellidoPaterno:empleado.columns.apellidoPaterno,
             apellidoMaterno:empleado.columns.apellidoMaterno,
@@ -57,13 +56,8 @@ empleadosController.getEmpleadoFindById = async (req, res) =>{
             upload:empleado.columns.upload,
             descripcion:empleado.columns.descripcion,
             email:empleado.columns.email
-        }
     }
-    //const empleado = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [ parseInt(req.params.empleadoId)]);
-    const obj = await empleado.findById(req.params.empleadoId, {columns:{
-        nombre:empleado.columns.nombre,
-        descripcion:empleado.columns.descripcion
-    }});
+    const obj = await empleado.findById(req.params.empleadoId, cols);
     res.json(obj);
 };
 module.exports = empleadosController;

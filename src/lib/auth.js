@@ -19,10 +19,11 @@ module.exports = {
          if(req.user.hasOwnProperty('EMPLEADO_ID')){
              console.log("Entro a la propiedad");
             const pages = req.user.page;
-            if(pages !== undefined)
 
             for(var i=0; i<pages.length;i++){
+                console.log(pages[i].URL);
                 if(pages[i].URL === url){
+                    console.log("Entro al IF");
                     return next();
                 }
             }

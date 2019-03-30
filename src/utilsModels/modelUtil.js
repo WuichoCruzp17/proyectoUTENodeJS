@@ -87,7 +87,6 @@ utilModel.getColumn  =function(e, typeColumn){
 utilModel.getColumnString =function(cols){
     var nameColumns ="";
     const columns = (cols !== undefined && cols!==null) ? cols:this.columns;
-    console.log("COLUMNS: ",columns);
     const c = this.getNumColumns(columns)-1;
     var i=0;
     for(var key in columns){
@@ -163,6 +162,7 @@ utilModel.select  = async function(columns, complement){
         query +=`FROM ${this.table.name} `
         query +=(complement !== undefined && complement !== null) ?  ` ${complement} `:'';
         const row = pool.query(query);
+        return row;
     }catch(err){
         console.log(err);
         return null;
