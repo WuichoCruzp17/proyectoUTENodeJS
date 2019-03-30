@@ -1,5 +1,4 @@
 const pool =    require('../database');
-const passport = require('passport');
 const helpers = require('../lib/helpers');
 const empleado = require('../models/empleado');
 const usuarioController = require('./usuarioController');
@@ -49,6 +48,7 @@ empleadosController.getEmpleados = async (req, res)=>{
 
 empleadosController.getEmpleadoFindById = async (req, res) =>{
     var cols = {
+            usuarioId:empleado.columns.usuarioId,
             nombre:empleado.columns.nombre,
             apellidoPaterno:empleado.columns.apellidoPaterno,
             apellidoMaterno:empleado.columns.apellidoMaterno,
@@ -59,5 +59,9 @@ empleadosController.getEmpleadoFindById = async (req, res) =>{
     }
     const obj = await empleado.findById(req.params.empleadoId, cols);
     res.json(obj);
+};
+
+empleadosController.delete = async (req, res) =>{
+
 };
 module.exports = empleadosController;

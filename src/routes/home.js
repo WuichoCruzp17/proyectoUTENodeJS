@@ -19,6 +19,7 @@ router.get('/ute/empleados',isLoggedIn,validateAccesousUsuario,empleadosControll
 router.post('/ute/saveEmpleado',isLoggedIn,validateAccesousUsuario,empleadosController.save);
 router.post('/ute/updateEmpleado',isLoggedIn,empleadosController.update);
 router.get('/ute/getEmpleados',isLoggedIn, empleadosController.getEmpleados);
-router.get('/ute/getEmpleadoFindById/:empleadoId', isLoggedIn, empleadosController.getEmpleadoFindById)
+router.get('/ute/getEmpleadoFindById/:empleadoId', isLoggedIn, empleadosController.getEmpleadoFindById);
+router.post('/ute/delteEmpleado',isLoggedIn);
 module.exports = router;
 

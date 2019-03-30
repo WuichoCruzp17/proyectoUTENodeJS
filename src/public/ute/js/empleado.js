@@ -46,6 +46,9 @@ var modsJS ={
             } */
         })
     },
+    clenFrom:function(){
+        util.clenFrom(modsJS.fromEl._data);
+    },
     valideDatos:function(){
         const $frmEmpleados = document.getElementById('frmEmpleados');
         const $inputs = $frmEmpleados.querySelectorAll('.empleados');
