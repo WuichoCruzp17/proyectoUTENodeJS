@@ -73,4 +73,10 @@ bdComponents.functions ={
         return "NOW()";
     }
 };
+
+const Criteria  ={};
+Criteria.getColumns = (map)=>{
+   return  map.keys();
+};
+
 module.exports  = bdComponents;
