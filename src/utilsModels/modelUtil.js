@@ -79,6 +79,9 @@ utilModel.getColumn  =function(e, typeColumn){
         }
     }
 }
+/* utilModel.getColumn  =function(nameColumn){
+    return this.columns[nameColumn].column;
+} */
  /**
   * Función que se encarga de realizar un sring de las columnas seleccionadas 'NameColumn as newNameColumn'
   * @param {Object} cols Son las columnas seleccionadas. No es requerido
@@ -167,6 +170,22 @@ utilModel.select  = async function(columns, complement){
         console.log(err);
         return null;
     }
+};
+utilModel.createObjecStringtWithModel = function () {
+    var cols = this.columns;
+    var objC = "function usuario( ";
+    var objF = "{ \n";
+    var i = 0;
+    const numColumns = this.getNumColumns(cols)-1;
+    for (var key in cols) {
+        objC += (i < numColumns) ? key + ", " : key;
+        objF += `this.${key} =${key}; \n`;
+        i++;
+    }
+    objC += ")";
+    objF += "\n }";
+    objC += "\n " + objF;
+    return objC;
 };
 /**Ejemplo de como setear las columnas cuando se solicite ciertas columnas de una tabla
  *  var cols = {
