@@ -2,24 +2,25 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const pool = require('../database');
 const helpers = require('../lib/helpers');
+const loginController = require('../controllers/loginController');
+const paginaController = require('../controllers/paginaController');
 passport.use('local.signin', new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, username, password, done) => {
-    const usuarioId = parseInt(req.body.usuario);
+    const login = {
+        usuarioId: parseInt(req.body.usuario),
+        username:req.body.username
+    };
     var  rows =null;
-    switch(usuarioId){
-        case 1:
-        try{rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMAIL = ? ',[req.body.username]);}catch(err){console.log(err); row =[];}
-        
-        break;
-    }
+    rows = await loginController.getUser(login);
+    console.log("Passport", rows);
     if(rows.length>0){
         const user = rows[0];
-         const validPassword =  await  helpers.matchPassword(password, user.PASSWORD);
+         const validPassword =  await  helpers.matchPassword(password, user.contrasena);
          if(validPassword){
-             done(null,  user, req.flash('success','Welcome'+user.NOMBRE));
+             done(null,  user, req.flash('success','Welcome'+user.nombre));
          }else{
              done(null, false, req.flash('message','Incorrect Password'));
          }
@@ -37,11 +38,11 @@ passport.use('local.signup', new LocalStrategy({
 }, async (req, username, password, done) => {
     console.log("Despues de validar el usuario LocalStrategy");
     var newUser ={};
-    switch(req.body.USUARIO_ID){
+    switch(req.body.usuarioId){
         case 1:
-        const {EMPLEADO_ID, NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,FECHA_NACIMIENTO,EMAIL,USUARIO_ID  } = req.body;
+        const {empleadoId, nombre,apellidoPaterno,apellidoMaterno,fechaNacimiento,email,usuarioId  } = req.body;
         newUser = {
-            usuarioId: EMPLEADO_ID, NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,FECHA_NACIMIENTO,EMAIL,USUARIO_ID
+            usuarioId: empleadoId, nombre,apellidoPaterno,apellidoMaterno,fechaNacimiento,email,usuarioId
             };
         break;
     }
@@ -57,9 +58,11 @@ passport.use('local.signup', new LocalStrategy({
  */
 passport.serializeUser(async (user, done) => {
    // console.log("Usuario Serelize User: ", user);
-    switch(user.USUARIO_ID){
+   var query ="SELECT PAGINA.NOMBRE as nombre, PAGINA.URL as url FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?";
+    switch(user.usuarioId){
         case 1:
-        user.page = await pool.query('SELECT PAGINA.NOMBRE, PAGINA.URL FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?', [user.USUARIO_ID]);
+        
+        user.page = await paginaController.executeQuery(query,[user.usuarioId]);
         console.log("Serealize",user);
         done(null, user);
         break;
@@ -72,11 +75,11 @@ passport.deserializeUser(async (user, done) => {
     
     var rows = null;
     if(typeof user !=="object"){
-        if(user.hasOwnProperty('EMPLEADO_ID')){
+        if(user.hasOwnProperty('empleadoId')){
            
-            rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [user.EMPLEADO_ID]);
+            rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMPLEADO_ID = ?', [user.empleadoId]);
             rows= helpers.setFunctions(rows[0]);
-            rows.pages = await pool.query('SELECT PAGINA.NOMBRE, PAGINA.URL FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?', [user.USUARIO_ID]);
+            rows.pages = await pool.query('SELECT PAGINA.NOMBRE, PAGINA.URL FROM PAGINA, USUARIO_ACCESO WHERE PAGINA.PAGINA_ID = USUARIO_ACCESO.PAGINA_ID AND USUARIO_ACCESO.USUARIO_ID =?', [user.usuarioId]);
             done(null, rows);
         }else if(user.hasOwnProperty('ALUMNO_ID')){
 

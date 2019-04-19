@@ -16,13 +16,13 @@ module.exports = {
      validateAccesousUsuario(req, res, next){
          const url = req.url;
          console.log(url);
-         if(req.user.hasOwnProperty('EMPLEADO_ID')){
+         if(req.user.hasOwnProperty('empleadoId')){
              console.log("Entro a la propiedad");
             const pages = req.user.page;
 
             for(var i=0; i<pages.length;i++){
-                console.log(pages[i].URL);
-                if(pages[i].URL === url){
+                console.log(pages[i].url);
+                if(pages[i].url === url){
                     console.log("Entro al IF");
                     return next();
                 }

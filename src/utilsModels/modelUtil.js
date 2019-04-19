@@ -44,7 +44,6 @@ utilModel.update = async function(columns, objectId){
  * @param {Object} columns Son las columnas que se buscan de ese objeto. No es requerido
  */
 utilModel.findById = async function(objectId,columns){
-    console.log("Find: ", columns);
     try{const row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.getColumn(this.columns,'primarykey')} = ?`,[objectId]);
                 if(row){
                     return row[0];
@@ -79,9 +78,17 @@ utilModel.getColumn  =function(e, typeColumn){
         }
     }
 }
+/**
+ * Función que se encarga de retornar el nombre de una columna de una tabla
+ * con el parametro de nameColumn.
+ * @param nameColumn 
+ */
+utilModel.getNameColumn  =function(nameColumn){
+    return this.columns[nameColumn].column;
+}
 /* utilModel.getColumn  =function(nameColumn){
     return this.columns[nameColumn].column;
-} */
+}
  /**
   * Función que se encarga de realizar un sring de las columnas seleccionadas 'NameColumn as newNameColumn'
   * @param {Object} cols Son las columnas seleccionadas. No es requerido
@@ -93,8 +100,7 @@ utilModel.getColumnString =function(cols){
     const c = this.getNumColumns(columns)-1;
     var i=0;
     for(var key in columns){
-        console.log(key);
-        nameColumns+= (i<c) ? columns[key].column + " as " +key +", ":columns[key].column + " as " +key;
+        nameColumns+= (i<c) ? this.columns[key].column + " as " +key +", ":this.columns[key].column + " as " +key;
 	i++;
 
 }
@@ -151,9 +157,10 @@ utilModel.updateColumns = function(cols){
     }
     return columnsSet;
 };
-utilModel.executeQuery = async function(query){
+utilModel.executeQuery = async function(query, params){
     try{
-        const row =await pool.query(query);
+        console.log(query, params);
+        const row =await pool.query(query, params);
         return (row) ? row:null;
     }catch(err){console.log(err); return null;}
 };
@@ -187,6 +194,13 @@ utilModel.createObjecStringtWithModel = function () {
     objC += "\n " + objF;
     return objC;
 };
+
+utilModel.findByProperty = async function(property, value){
+    try{
+        var row  = await pool.query(`SELECT ${this.getColumnString()} FROM ${this.table.name} WHERE ${property}  =?`, [value]);
+        return row;
+    }catch(err){console.log(err); return null;}
+}
 /**Ejemplo de como setear las columnas cuando se solicite ciertas columnas de una tabla
  *  var cols = {
         columns:{

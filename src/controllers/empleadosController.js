@@ -38,7 +38,7 @@ res.json({success:'OK'});
 };
 
 empleadosController.getEmpleados = async (req, res)=>{
-    console.log("EMPLEADOS");
+    console.log(req.usuario);
     const empleados = await pool.query('SELECT EMPLEADO_ID, CONCAT(NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO) AS NOMBRE, EMAIL FROM EMPLEADO WHERE ESTATUS_ID=1 AND ELIMINADO_ID=1 AND USUARIO_ID >1');
    // console.log( await empleado.executeQuery(`SELECT ${empleado.columns.empleadoId.column}, ${bdComponents.functions.CONCAT(['NOMBRE','APELLIDO_PATERNO','APELLIDO_MATERNO'],'NOMBRE')}, EMAAIL FROM EMPLEADO WHERE ESTATUS=1 AND USUARIO_ID>1`  ));
   // console.log( await empleado.select(`${empleado.columns.empleadoId.column}, ${bdComponents.functions.CONCAT(['NOMBRE','APELLIDO_PATERNO','APELLIDO_MATERNO'],'NOMBRE')}, EMAIL`,'WHERE ESTATUS_ID=1 AND USUARIO_ID>1'));
@@ -47,19 +47,23 @@ empleadosController.getEmpleados = async (req, res)=>{
 
 empleadosController.getEmpleadoFindById = async (req, res) =>{
     var cols = {
-            usuarioId:empleado.columns.usuarioId,
-            nombre:empleado.columns.nombre,
-            apellidoPaterno:empleado.columns.apellidoPaterno,
-            apellidoMaterno:empleado.columns.apellidoMaterno,
-            fechaNacimiento:empleado.columns.fechaNacimiento,
-            upload:empleado.columns.upload,
-            descripcion:empleado.columns.descripcion,
-            email:empleado.columns.email
+            usuarioId:empleado.getNameColumn('empleadoId'),
+            nombre:empleado.getNameColumn('nombre'),
+            apellidoPaterno:empleado.getNameColumn('apellidoPaterno'),
+            apellidoMaterno:empleado.getNameColumn('apellidoMaterno'),
+            fechaNacimiento:empleado.getNameColumn('fechaNacimiento'),
+            upload:empleado.getNameColumn('upload'),
+            descripcion:empleado.getNameColumn('descripcion'),
+            email:empleado.getNameColumn('email')
     }
     const obj = await empleado.findById(req.params.empleadoId, cols);
     res.json(obj);
 };
-
+empleadosController.findByProperty =async (property, value)=>{
+    console.log('Propiedad', property);
+    console.log('Value', value);
+    return await empleado.findByProperty(property, value);
+};
 empleadosController.delete = async (req, res) =>{
 
 };
