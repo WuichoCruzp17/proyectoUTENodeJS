@@ -107,10 +107,10 @@
             </thead>
             <tbody>
               <tr v-for="entry in filteredHeroes">
-                <td>\{{entry['NOMBRE']}}</td>
-                <td>\{{entry['EMAIL']}}</td>
+                <td>\{{entry['nombre']}}</td>
+                <td>\{{entry['email']}}</td>
                 <td>
-                    <button type='button' class="btn btn-primary"  v-on:click='getObject(entry["EMPLEADO_ID"])' >Editar</button>
+                    <button type='button' class="btn btn-primary"  v-on:click='getObject(entry["empleadoId"])' >Editar</button>
                     <button type='button'    class="btn btn-danger">Eliminar</button>
                 </td>
               </tr>

@@ -12,7 +12,7 @@ var modsJS ={
             script:'#grid-template',
             element:"#demo",
             columns:[
-                {name:'NOMBRE'},{name:'EMAIL'},{name:''}
+                {name:'nombre'},{name:'email'},{name:''}
             ],
             data:[],
             component:modsJS.getComponent()
@@ -124,7 +124,7 @@ var modsJS ={
             url: "/ute/getEmpleados",
             dataType: 'json'
         }).done(function (result) {
-            console.log(result);
+            console.log("JSOn",result);
             modsJS.getEmpleadosCallback(result);
         });
     },

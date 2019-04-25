@@ -1,9 +1,10 @@
 const utilModel = {};
-const pool =    require('../database');
+const pool = require('../database');
 const codeBss = require('../resources/codeBss');
+const genericDAO = require('../DAO/genericDAO');
 utilModel.calcularEdad = function () {
     if (this.FECHA_NACIMIENTO !== null) {
-        var fechaNace = new Date(this.FECHA_NACIMIENTO );
+        var fechaNace = new Date(this.FECHA_NACIMIENTO);
         var fechaActual = new Date()
         var mes = fechaActual.getMonth();
         var dia = fechaActual.getDate();
@@ -17,10 +18,10 @@ utilModel.calcularEdad = function () {
 
 };
 
-utilModel.save = async function(cols){
-    try{
+utilModel.save = async function (cols) {
+    try {
         const row = await pool.query(`INSERT INTO ${this.table.name} VALUES(${this.saveColumns(cols)})`);
-    }catch(err){console.log(err); return null;}
+    } catch (err) { console.log(err); return null; }
 };
 
 /**
@@ -29,27 +30,29 @@ utilModel.save = async function(cols){
  * @param {Object} objectId Es el objeto que contiene el id del objeto a actualizar
  * @returns {Boolean} row Retorna un true  o un false 
  */
-utilModel.update = async function(columns, objectId){
-    try{
-        const row =await  pool.query(`UPDATE ${this.table.name}  ${this.updateColumns(columns)} WHERE ${objectId.column} = ${objectId.value}`);
+utilModel.update = async function (columns, objectId) {
+    try {
+        const row = await pool.query(`UPDATE ${this.table.name}  ${this.updateColumns(columns)} WHERE ${objectId.column} = ${objectId.value}`);
         /* console.log(row);
           var query = `UPDATE ${this.table.name}  ${this.updateColumns(columns)} WHERE ${objectId.column} = ${objectId.value}`;
         console.log(query); */
-        return (row) ? true :false;
-    }catch(err){console.log(err); return null;}
+        return (row) ? true : false;
+    } catch (err) { console.log(err); return null; }
 };
 /**
  * Función que se encarga de realizar una consulta en la base de datos con el id del objeto.
  * @param {Int} objectId Es el id del objeto.
  * @param {Object} columns Son las columnas que se buscan de ese objeto. No es requerido
  */
-utilModel.findById = async function(objectId,columns){
-    try{const row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.getColumn(this.columns,'primarykey')} = ?`,[objectId]);
-                if(row){
-                    return row[0];
-                }
-    return null;
-    }catch(err){console.log("Error: ",err); return null;}
+utilModel.findById = async function (objectId, columns) {
+    try {
+        var query = `SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.getColumn(this.columns, 'primarykey')} = ?`;
+        const row = await genericDAO.execute(query, [objectId]);
+        if (row) {
+            return row[0];
+        }
+        return null;
+    } catch (err) { console.log("Error: ", err); return null; }
 };
 
 /**
@@ -57,11 +60,11 @@ utilModel.findById = async function(objectId,columns){
  * y que esten activos.
  * @param {Object} columns Son las columnas que se buscan obtener, No es requerido.
  */
-utilModel.findAll = async function(columns){
-    try{
+utilModel.findAll = async function (columns) {
+    try {
         const row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.generalizarCriteria()}`);
-        return (row) ? row :null;
-    }catch(err){console.log(err); return null;}
+        return (row) ? row : null;
+    } catch (err) { console.log(err); return null; }
 };
 
 
@@ -71,9 +74,9 @@ utilModel.findAll = async function(columns){
  * @param {String} typeColumn representa el nombre de la columna
  * @returns {String} retorna la columna
  */
-utilModel.getColumn  =function(e, typeColumn){
-    for(var key in e){
-        if(e[key].hasOwnProperty(typeColumn)){
+utilModel.getColumn = function (e, typeColumn) {
+    for (var key in e) {
+        if (e[key].hasOwnProperty(typeColumn)) {
             return e[key].column;
         }
     }
@@ -83,7 +86,7 @@ utilModel.getColumn  =function(e, typeColumn){
  * con el parametro de nameColumn.
  * @param nameColumn 
  */
-utilModel.getNameColumn  =function(nameColumn){
+utilModel.getNameColumn = function (nameColumn) {
     return this.columns[nameColumn].column;
 }
 /* utilModel.getColumn  =function(nameColumn){
@@ -94,28 +97,31 @@ utilModel.getNameColumn  =function(nameColumn){
   * @param {Object} cols Son las columnas seleccionadas. No es requerido
   * @returns {String} nameColumns Son las columnas ya con su nuevo rendonamiento
  */
-utilModel.getColumnString =function(cols){
-    var nameColumns ="";
-    const columns = (cols !== undefined && cols!==null) ? cols:this.columns;
-    const c = this.getNumColumns(columns)-1;
-    var i=0;
-    for(var key in columns){
-        nameColumns+= (i<c) ? this.columns[key].column + " as " +key +", ":this.columns[key].column + " as " +key;
-	i++;
+utilModel.getColumnString = function (cols) {
+    var nameColumns = "";
+    const columns = (cols !== undefined && cols !== null) ? cols : this.columns;
+    const c = this.getNumColumns(columns) - 1;
+    var i = 0;
+    for (var key in columns) {
+        if(key !=="concat"){
+            nameColumns += (i < c) ? this.columns[key].column + " as " + key + ", " : this.columns[key].column + " as " + key;
+        }else{nameColumns += (i<c) ?  cols[key] +","  :cols[key];}
+        
+        i++;
 
-}
-console.log(nameColumns);
-return nameColumns;  
+    }
+    console.log(nameColumns);
+    return nameColumns;
 }
 /**
  * Función que se encarga de obtener el número de columnas de un objeto.
  * @param {Object} cols Son las columnas del objeto. No es requerido.
  * @returns {Int} i es la cantidad de columnas del objeto.
  */
-utilModel.getNumColumns =function(cols){
-    var i=0;
-    const columns = (cols !== undefined &&  cols !==null) ? cols:this.columns;
-    for(var k in columns){
+utilModel.getNumColumns = function (cols) {
+    var i = 0;
+    const columns = (cols !== undefined && cols !== null) ? cols : this.columns;
+    for (var k in columns) {
         i++;
     }
     return i;
@@ -125,17 +131,17 @@ utilModel.getNumColumns =function(cols){
  * Función que retorna las validaciones de ELIMINADO_ID y  ESTATUS_ID
  * @returns {String}
  */
-utilModel.generalizarCriteria = function(){
+utilModel.generalizarCriteria = function () {
     return `ELIMINADO_ID = ${codeBss.NOELIMINADO} AND ESTATUS_ID = ${codeBss.ACTIVO}`;
 };
 
-utilModel.saveColumns = function(cols){
-    const numColumns = this.getNumColumns(cols.columns) -1;
+utilModel.saveColumns = function (cols) {
+    const numColumns = this.getNumColumns(cols.columns) - 1;
     const columns = cols.columns;
-    var setColumns ="";
-    var i=0;
-    for(var key in columns){
-          setColumns += (i<numColumns) ? '?, ':'?';
+    var setColumns = "";
+    var i = 0;
+    for (var key in columns) {
+        setColumns += (i < numColumns) ? '?, ' : '?';
         i++;
     }
     return setColumns;
@@ -146,34 +152,34 @@ utilModel.saveColumns = function(cols){
  * @param {Object} cols Son las columnas a setear para su actualización.
  * @returns {String} columnsSet Retorna un String de las columnas ya seteadas con su valor.
  */
-utilModel.updateColumns = function(cols){
-    const numColumns = this.getNumColumns(cols.columns) -1;
+utilModel.updateColumns = function (cols) {
+    const numColumns = this.getNumColumns(cols.columns) - 1;
     const columns = cols.columns;
     var columnsSet = "SET ";
-    var i =0;
-    for(var key in columns){
-        columnsSet += (i<numColumns) ? `${columns[key].column} = ${columns[key].value}, ` : `${columns[key].column} = ${columns[key].value}`
+    var i = 0;
+    for (var key in columns) {
+        columnsSet += (i < numColumns) ? `${columns[key].column} = ${columns[key].value}, ` : `${columns[key].column} = ${columns[key].value}`
         i++;
     }
     return columnsSet;
 };
-utilModel.executeQuery = async function(query, params){
-    try{
+utilModel.executeQuery = async function (query, params) {
+    try {
         console.log(query, params);
-        const row =await pool.query(query, params);
-        return (row) ? row:null;
-    }catch(err){console.log(err); return null;}
+        const row = await pool.query(query, params);
+        return (row) ? row : null;
+    } catch (err) { console.log(err); return null; }
 };
 
-utilModel.select  = async function(columns, complement){
-    try{
+utilModel.select = async function (columns, complement) {
+    try {
         var query = "SELECT";
-        query +=(columns !== undefined && columns != null) ? ` ${columns} ` :" * ";
-        query +=`FROM ${this.table.name} `
-        query +=(complement !== undefined && complement !== null) ?  ` ${complement} `:'';
+        query += (columns !== undefined && columns != null) ? ` ${columns} ` : " * ";
+        query += `FROM ${this.table.name} `
+        query += (complement !== undefined && complement !== null) ? ` ${complement} ` : '';
         const row = pool.query(query);
         return row;
-    }catch(err){
+    } catch (err) {
         console.log(err);
         return null;
     }
@@ -183,7 +189,7 @@ utilModel.createObjecStringtWithModel = function () {
     var objC = "function usuario( ";
     var objF = "{ \n";
     var i = 0;
-    const numColumns = this.getNumColumns(cols)-1;
+    const numColumns = this.getNumColumns(cols) - 1;
     for (var key in cols) {
         objC += (i < numColumns) ? key + ", " : key;
         objF += `this.${key} =${key}; \n`;
@@ -195,11 +201,11 @@ utilModel.createObjecStringtWithModel = function () {
     return objC;
 };
 
-utilModel.findByProperty = async function(property, value){
-    try{
-        var row  = await pool.query(`SELECT ${this.getColumnString()} FROM ${this.table.name} WHERE ${property}  =?`, [value]);
+utilModel.findByProperty = async function (property, value,columns) {
+    try {
+        var row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =?`, [value]);
         return row;
-    }catch(err){console.log(err); return null;}
+    } catch (err) { console.log(err); return null; }
 }
 /**Ejemplo de como setear las columnas cuando se solicite ciertas columnas de una tabla
  *  var cols = {

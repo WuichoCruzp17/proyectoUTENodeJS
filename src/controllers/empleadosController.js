@@ -39,9 +39,12 @@ res.json({success:'OK'});
 
 empleadosController.getEmpleados = async (req, res)=>{
     console.log(req.usuario);
-    const empleados = await pool.query('SELECT EMPLEADO_ID, CONCAT(NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO) AS NOMBRE, EMAIL FROM EMPLEADO WHERE ESTATUS_ID=1 AND ELIMINADO_ID=1 AND USUARIO_ID >1');
-   // console.log( await empleado.executeQuery(`SELECT ${empleado.columns.empleadoId.column}, ${bdComponents.functions.CONCAT(['NOMBRE','APELLIDO_PATERNO','APELLIDO_MATERNO'],'NOMBRE')}, EMAAIL FROM EMPLEADO WHERE ESTATUS=1 AND USUARIO_ID>1`  ));
-  // console.log( await empleado.select(`${empleado.columns.empleadoId.column}, ${bdComponents.functions.CONCAT(['NOMBRE','APELLIDO_PATERNO','APELLIDO_MATERNO'],'NOMBRE')}, EMAIL`,'WHERE ESTATUS_ID=1 AND USUARIO_ID>1'));
+    var cols = {
+        empleadoId:empleado.getNameColumn('empleadoId'),
+        concat:bdComponents.functions.CONCAT([empleado.getNameColumn('nombre'),empleado.getNameColumn('apellidoPaterno'),empleado.getNameColumn('apellidoMaterno')],"nombre"),
+        email:empleado.getNameColumn('email')
+};
+        const empleados = await    empleado.findByProperty(empleado.getNameColumn('usuarioId'),3, cols);
    res.json(empleados);
 };
 
