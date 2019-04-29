@@ -44,6 +44,7 @@ app.use((req, res, next)=>{
 
 //Routes
 app.use(require('./routes/home'));
+
 /*app.use(require('./routes/authentication'));
 app.use(require('./routes/profile'));
 app.use('/links',require('./routes/links'));*/
@@ -53,3 +54,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.listen(app.get('port'),()=>{
     console.log('Server on por', app.get('port'));
 });
+
+app.use(function(req, res, next) {
+    res.status(404).send('Sorry cant find that!');
+  });
