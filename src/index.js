@@ -5,7 +5,7 @@ const path =    require('path');
 const flash=require('connect-flash');
 const session =    require('express-session');
 const mysqlStore=    require('express-mysql-session');
-const {database} =    require('./keys');
+const {database,errorpage} =    require('./keys');
 const passport =    require('passport');
 //Initizations
 const app =    express();
@@ -44,7 +44,7 @@ app.use((req, res, next)=>{
 
 //Routes
 app.use(require('./routes/home'));
-
+app.use('/ute/empleados',require('./routes/empleados'));
 /*app.use(require('./routes/authentication'));
 app.use(require('./routes/profile'));
 app.use('/links',require('./routes/links'));*/
@@ -56,5 +56,6 @@ app.listen(app.get('port'),()=>{
 });
 
 app.use(function(req, res, next) {
-    res.status(404).send('Sorry cant find that!');
+    console.log(req.url);
+    res.render('error_404',{url:req.url.split("/")[1]});
   });

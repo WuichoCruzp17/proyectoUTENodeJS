@@ -1,0 +1,11 @@
+const express =    require('express');
+const router = express.Router();
+const {isLoggedIn,isNotLoogedin,validateAccesousUsuario} = require('../lib/auth');
+const empleadosController = require('../controllers/empleadosController');
+router.get('/',isLoggedIn,validateAccesousUsuario,empleadosController.getViewEmpleados);
+router.post('/saveEmpleado',isLoggedIn,validateAccesousUsuario,empleadosController.save);
+router.post('/updateEmpleado',isLoggedIn,empleadosController.update);
+router.get('/getEmpleados',isLoggedIn, empleadosController.getEmpleados);
+router.get('/getEmpleadoFindById/:empleadoId', isLoggedIn, empleadosController.getEmpleadoFindById);
+router.post('/delteEmpleado',isLoggedIn);
+module.exports = router;

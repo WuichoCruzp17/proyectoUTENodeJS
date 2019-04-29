@@ -31,14 +31,15 @@ res.json({success:'exito', row});
 };
 
 empleadosController.update = async(req,res)=>{
+console.log("---- Update de Empleados -----");
 const {empleadoId, usuario, name, apellidoPaterno, apellidoMaterno, email, upload, description} = req.body;
+console.log("Update: ", req.body)
 const row = await pool.query('UPDATE EMPLEADO SET NOMBRE = ?, APELLIDO_MATERNO = ?, APELLIDO_PATERNO =?, EMAIL =?,  UPLOAD =?, DESCRIPCION =?,  USUARIO_ID=? WHERE EMPLEADO_ID =?',
 [name,apellidoMaterno, apellidoPaterno,email,upload,description, usuario, empleadoId]);
 res.json({success:'OK'});
 };
 
 empleadosController.getEmpleados = async (req, res)=>{
-    console.log(req.usuario);
     var cols = {
         empleadoId:empleado.getNameColumn('empleadoId'),
         concat:bdComponents.functions.CONCAT([empleado.getNameColumn('nombre'),empleado.getNameColumn('apellidoPaterno'),empleado.getNameColumn('apellidoMaterno')],"nombre"),
@@ -50,14 +51,15 @@ empleadosController.getEmpleados = async (req, res)=>{
 
 empleadosController.getEmpleadoFindById = async (req, res) =>{
     var cols = {
-            usuarioId:empleado.getNameColumn('empleadoId'),
+            empleadoId:empleado.getNameColumn('empleadoId'),
             nombre:empleado.getNameColumn('nombre'),
             apellidoPaterno:empleado.getNameColumn('apellidoPaterno'),
             apellidoMaterno:empleado.getNameColumn('apellidoMaterno'),
             fechaNacimiento:empleado.getNameColumn('fechaNacimiento'),
             upload:empleado.getNameColumn('upload'),
             descripcion:empleado.getNameColumn('descripcion'),
-            email:empleado.getNameColumn('email')
+            email:empleado.getNameColumn('email'),
+            usuarioId:empleado.getNameColumn('usuarioId')
     }
     const obj = await empleado.findById(req.params.empleadoId, cols);
     res.json(obj);

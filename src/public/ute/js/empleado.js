@@ -97,7 +97,9 @@ var modsJS ={
             data: object,
             dataType: 'json'
         }).done(function (result) {
-           
+           if(result){
+            modsJS.clenFrom()
+           }
         });
     },
 
@@ -121,7 +123,7 @@ var modsJS ={
     getEmpleados:function(){
         $.ajax({
             method: "get",
-            url: "/ute/getEmpleados",
+            url: "/ute/empleados/getEmpleados",
             dataType: 'json'
         }).done(function (result) {
             console.log("JSOn",result);
@@ -152,7 +154,7 @@ var modsJS ={
         var obj = {empleadoId};
         $.ajax({
             method: "GET",
-            url: "/ute/getEmpleadoFindById/"+empleadoId,
+            url: "/ute/empleados/getEmpleadoFindById/"+empleadoId,
             dataType: 'json'
         }).done(function (result) {
             console.log(result);

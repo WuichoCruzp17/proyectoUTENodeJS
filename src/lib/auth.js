@@ -14,8 +14,9 @@ module.exports = {
         }
      },
      validateAccesousUsuario(req, res, next){
-         const url = req.url;
-         console.log(url);
+         const url = (req.url !=="/") ? req.url :req.baseUrl;
+         console.log("URL:"+url);
+         console.log("BaseURL:"+req.baseUrl);
          if(req.user.hasOwnProperty('empleadoId')){
              console.log("Entro a la propiedad");
             const pages = req.user.page;

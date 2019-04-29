@@ -15,7 +15,7 @@ passport.use('local.signin', new LocalStrategy({
     };
     var  rows =null;
     rows = await loginController.getUser(login);
-    console.log("Passport", rows);
+    /* console.log("Passport", rows); */
     if(rows.length>0){
         const user = rows[0];
          const validPassword =  await  helpers.matchPassword(password, user.contrasena);
@@ -63,7 +63,7 @@ passport.serializeUser(async (user, done) => {
         case 1:
         
         user.page = await paginaController.executeQuery(query,[user.usuarioId]);
-        console.log("Serealize",user);
+        /* console.log("Serealize",user); */
         done(null, user);
         break;
     }
