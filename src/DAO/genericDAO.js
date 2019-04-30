@@ -1,20 +1,20 @@
-const pool =    require('../database');
+const pool = require('../database');
 
-const genericDAO ={};
+const genericDAO = {};
 
-genericDAO.execute = async (query, params) =>{
-    try{
-        var rows =null;
-        if(typeof params ==="undefined"){
+genericDAO.execute = async (query, params) => {
+    try {
+        var rows = null;
+        if (typeof params === "undefined") {
             rows = await pool.query(query);
-        }else{
+        } else {
             console.log("Query: ", query);
             console.log("Query: ", params);
-            rows = await pool.query(query,params);
+            rows = await pool.query(query, params);
         }
         console.log(rows);
         return rows;
-    }catch(err){
+    } catch (err) {
         console.log(err);
         return null;
     }
