@@ -45,6 +45,7 @@ app.use((req, res, next)=>{
 //Routes
 app.use(require('./routes/home'));
 app.use('/ute/empleados',require('./routes/empleados'));
+app.use('/ute/paginas',require('./routes/pagina'));
 /*app.use(require('./routes/authentication'));
 app.use(require('./routes/profile'));
 app.use('/links',require('./routes/links'));*/

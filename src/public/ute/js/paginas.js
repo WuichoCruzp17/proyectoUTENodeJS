@@ -55,7 +55,7 @@ const modsJS ={
     save:function(object){
         $.ajax({
             method: "POST",
-            url: "/ute/saveURL",
+            url: "/ute/paginas/saveURL",
             data: object,
             dataType: 'json'
         }).done(function (result) {
@@ -66,7 +66,7 @@ const modsJS ={
     getPages:function(){
         $.ajax({
             method: "GET",
-            url: "/ute/getPages",
+            url: "/ute/paginas/getPages",
             dataType: 'json'
         }).done(function (result) {
             modsJS.grid._data.gridData = []
