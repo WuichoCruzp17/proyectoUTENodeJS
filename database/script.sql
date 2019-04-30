@@ -109,3 +109,20 @@ END IF;
 END$$
 
 DELIMITER ;
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `getMenu`(
+in usuarioId int
+)
+BEGIN
+		SELECT
+        p.NOMBRE AS nombre, 
+        p.URL AS url, 
+        m.MENU_ID AS menuId 
+			FROM  PAGINA p 
+				LEFT JOIN PAGINA_MENU pm on p.PAGINA_ID = pm.PAGINA_ID 
+				LEFT JOIN menu m on pm.MENU_ID = m.MENU_ID
+				LEFT JOIN USUARIO_ACCESO ua on p.PAGINA_ID = ua.PAGINA_ID 
+			WHERE ua.USUARIO_ID=usuarioId
+		GROUP BY p.PAGINA_ID ;
+END
+END$$

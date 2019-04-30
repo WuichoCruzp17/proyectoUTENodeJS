@@ -2,26 +2,10 @@ const utilModel = {};
 const pool = require('../database');
 const codeBss = require('../resources/codeBss');
 const genericDAO = require('../DAO/genericDAO');
-utilModel.calcularEdad = function () {
-    if (this.FECHA_NACIMIENTO !== null) {
-        var fechaNace = new Date(this.FECHA_NACIMIENTO);
-        var fechaActual = new Date()
-        var mes = fechaActual.getMonth();
-        var dia = fechaActual.getDate();
-        var año = fechaActual.getFullYear();
-        fechaActual.setDate(dia);
-        fechaActual.setMonth(mes);
-        fechaActual.setFullYear(año);
-        edad = Math.floor(((fechaActual - fechaNace) / (1000 * 60 * 60 * 24) / 365));
-        return edad;
-    } else { return null; }
-
-};
 
 utilModel.save = async function (cols) {
-    try {
         const row = await pool.query(`INSERT INTO ${this.table.name} VALUES(${this.saveColumns(cols)})`);
-    } catch (err) { console.log(err); return null; }
+        return row;
 };
 
 /**
@@ -31,13 +15,7 @@ utilModel.save = async function (cols) {
  * @returns {Boolean} row Retorna un true  o un false 
  */
 utilModel.update = async function (columns, objectId) {
-    try {
-        const row = await pool.query(`UPDATE ${this.table.name}  ${this.updateColumns(columns)} WHERE ${objectId.column} = ${objectId.value}`);
-        /* console.log(row);
-          var query = `UPDATE ${this.table.name}  ${this.updateColumns(columns)} WHERE ${objectId.column} = ${objectId.value}`;
-        console.log(query); */
-        return (row) ? true : false;
-    } catch (err) { console.log(err); return null; }
+        return await genericDAO.execute(`UPDATE ${this.table.name}  ${this.updateColumns(columns)} WHERE ${objectId.column} = ${objectId.value}`);
 };
 /**
  * Función que se encarga de realizar una consulta en la base de datos con el id del objeto.
@@ -45,14 +23,8 @@ utilModel.update = async function (columns, objectId) {
  * @param {Object} columns Son las columnas que se buscan de ese objeto. No es requerido
  */
 utilModel.findById = async function (objectId, columns) {
-    try {
-        var query = `SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.getColumn(this.columns, 'primarykey')} = ?`;
-        const row = await genericDAO.execute(query, [objectId]);
-        if (row) {
-            return row[0];
-        }
-        return null;
-    } catch (err) { console.log("Error: ", err); return null; }
+         const row = await genericDAO.execute( `SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.getColumn(this.columns, 'primarykey')} = ?`,[parseInt(objectId)]);
+       return  (row != null) ? row[0]:row;
 };
 
 /**
@@ -61,10 +33,7 @@ utilModel.findById = async function (objectId, columns) {
  * @param {Object} columns Son las columnas que se buscan obtener, No es requerido.
  */
 utilModel.findAll = async function (columns) {
-    try {
-        const row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${this.generalizarCriteria()}`);
-        return (row) ? row : null;
-    } catch (err) { console.log(err); return null; }
+       return await genericDAO.execute(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name}  ${this.generalizarCriteria()}`);   
 };
 
 
@@ -87,7 +56,12 @@ utilModel.getColumn = function (e, typeColumn) {
  * @param nameColumn 
  */
 utilModel.getNameColumn = function (nameColumn) {
-    return this.columns[nameColumn].column;
+    try{
+        return this.columns[nameColumn].column;
+    }catch(err){
+        console.log("No se encontro la propiedad de ", nameColumn, "\n modelUtil");
+    }
+    
 }
 /* utilModel.getColumn  =function(nameColumn){
     return this.columns[nameColumn].column;
@@ -99,18 +73,19 @@ utilModel.getNameColumn = function (nameColumn) {
  */
 utilModel.getColumnString = function (cols) {
     var nameColumns = "";
+    /* console.log("Cols: ",cols); */
     const columns = (cols !== undefined && cols !== null) ? cols : this.columns;
     const c = this.getNumColumns(columns) - 1;
     var i = 0;
     for (var key in columns) {
         if(key !=="concat"){
-            nameColumns += (i < c) ? this.columns[key].column + " as " + key + ", " : this.columns[key].column + " as " + key;
+            nameColumns += (i < c) ?  this.columns[key].column + " as " + key + ", " : this.table.name+"."+this.columns[key].column + " as " + key;
         }else{nameColumns += (i<c) ?  cols[key] +","  :cols[key];}
         
         i++;
 
     }
-    console.log(nameColumns);
+   /*  console.log("Name Columns: "+nameColumns); */
     return nameColumns;
 }
 /**
@@ -132,7 +107,7 @@ utilModel.getNumColumns = function (cols) {
  * @returns {String}
  */
 utilModel.generalizarCriteria = function () {
-    return `ELIMINADO_ID = ${codeBss.NOELIMINADO} AND ESTATUS_ID = ${codeBss.ACTIVO}`;
+    return (this.columns.hasOwnProperty('eliminadoId')) ?`WHERE ELIMINADO_ID = ${codeBss.NOELIMINADO} AND ESTATUS_ID = ${codeBss.ACTIVO}` :'';
 };
 
 utilModel.saveColumns = function (cols) {
@@ -158,9 +133,10 @@ utilModel.updateColumns = function (cols) {
     var columnsSet = "SET ";
     var i = 0;
     for (var key in columns) {
-        columnsSet += (i < numColumns) ? `${columns[key].column} = ${columns[key].value}, ` : `${columns[key].column} = ${columns[key].value}`
+        columnsSet += (i < numColumns) ? `${columns[key].column} = '${columns[key].value}', ` : `${columns[key].column} = '${columns[key].value}'`
         i++;
     }
+    console.log(columnsSet);
     return columnsSet;
 };
 utilModel.executeQuery = async function (query, params) {
@@ -206,7 +182,23 @@ utilModel.findByProperty = async function (property, value,columns) {
         var row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =?`, [value]);
         return row;
     } catch (err) { console.log(err); return null; }
-}
+};
+
+utilModel.executeStored =async function(nameStore,params){
+    var sql ="CALL "+nameStore +"(";
+    if(typeof params != "undefined"){
+        var contP = params.length -1;
+        for(var i=0;i<params.length;i++){
+            sql +=(i<contP) ? '?,' : '?';
+        }
+        sql +=")";
+    }else{
+        sql +="()";
+    }
+    console.log("----- Stored ------",sql);
+    return await genericDAO.execute(sql,params);
+};
+
 /**Ejemplo de como setear las columnas cuando se solicite ciertas columnas de una tabla
  *  var cols = {
         columns:{

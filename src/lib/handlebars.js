@@ -1,3 +1,4 @@
+const handlebars =  require('handlebars');
 const helpers ={};
 
 helpers.fullName = function(user){
@@ -18,4 +19,18 @@ helpers.getAge = function(fehcaNacimiento){
         return edad;
     } else { return null; }
 };
+
+helpers.buildMenu = function(pages){
+    var r ="";
+    for(var i=0; i<pages.lenth;i++){
+        console.log("Pagina :" +i +" "+pages[i]);
+        r +=pages[i].rul +" ";
+    }
+    /* console.log("Paginas a pintar -->"+pages[0]); */
+};
+
+helpers.handlebars = function(html){
+    console.log("Handlebars--->"+handlebars.SafeString);
+    return new  handlebars.SafeString(html);
+}
 module.exports = helpers;

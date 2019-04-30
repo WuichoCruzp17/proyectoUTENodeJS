@@ -106,7 +106,7 @@ var modsJS ={
     update:function(object){
         $.ajax({
             method: "POST",
-            url: "/ute/updateEmpleado",
+            url: "/ute/empleados/updateEmpleado",
             data: object,
             dataType: 'json'
         }).done(function (result) {

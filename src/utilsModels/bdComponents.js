@@ -74,6 +74,10 @@ bdComponents.functions ={
     }
 };
 
+bdComponents.createSelect = function(){
+    
+};
+
 const Criteria  ={};
 Criteria.getColumns = (map)=>{
    return  map.keys();

@@ -8,8 +8,11 @@ genericDAO.execute = async (query, params) =>{
         if(typeof params ==="undefined"){
             rows = await pool.query(query);
         }else{
+            console.log("Query: ", query);
+            console.log("Query: ", params);
             rows = await pool.query(query,params);
         }
+        console.log(rows);
         return rows;
     }catch(err){
         console.log(err);

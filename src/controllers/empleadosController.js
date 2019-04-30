@@ -2,6 +2,7 @@ const pool =    require('../database');
 const empleado = require('../models/empleado');
 const usuarioController = require('./usuarioController');
 const bdComponents = require('../utilsModels/bdComponents');
+const paginaMenuController = require('./paginaMenuController');
 const empleadosController ={};
 empleadosController.getViewEmpleados =async (req, res)=>{
     //const usuario = await pool.query('SELECT USUARIO_ID AS usuarioId, NOMBRE AS nombre FROM USUARIO');
@@ -12,7 +13,7 @@ empleadosController.save =async(req,res)=>{
 
 const user = req.body;
 user.usuario = parseInt(user.usuario);
-const row = await pool.query('INSERT INTO EMPLEADO VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', [
+const row = await pool.query('INSERT INTO EMPLEADO VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',  [
     null,user.name,user.apellidoPaterno, user.apellidoMaterno, user.fechaNacimiento, user.email, 
     user.upload, user.description,'luis', parseInt(user.usuario),1,1,null
 ]);
@@ -32,11 +33,43 @@ res.json({success:'exito', row});
 
 empleadosController.update = async(req,res)=>{
 console.log("---- Update de Empleados -----");
-const {empleadoId, usuario, name, apellidoPaterno, apellidoMaterno, email, upload, description} = req.body;
-console.log("Update: ", req.body)
-const row = await pool.query('UPDATE EMPLEADO SET NOMBRE = ?, APELLIDO_MATERNO = ?, APELLIDO_PATERNO =?, EMAIL =?,  UPLOAD =?, DESCRIPCION =?,  USUARIO_ID=? WHERE EMPLEADO_ID =?',
-[name,apellidoMaterno, apellidoPaterno,email,upload,description, usuario, empleadoId]);
-res.json({success:'OK'});
+const {empleadoId, usuario, name, apellidoPaterno, apellidoMaterno, email, upload, description, fechaNacimiento} = req.body;
+const row =await empleado.update({ columns:{
+        nombre:{
+            column:empleado.getNameColumn('nombre'),
+            value:name
+        },
+        apellidoPaterno:{
+            column:empleado.getNameColumn('apellidoPaterno'),
+            value:apellidoPaterno
+        },
+        apellidoMaterno:{
+            column:empleado.getNameColumn('apellidoMaterno'),
+            value:apellidoMaterno
+        },
+        email:{
+            column:empleado.getNameColumn('email'),
+            value:email
+        },
+        descripcion:{
+            column:empleado.getNameColumn('descripcion'),
+            value:description
+        },
+        fechaNacimiento:{
+            column:empleado.getNameColumn('fechaNacimiento'),
+            value:fechaNacimiento
+        },
+        usuario:{
+            column:empleado.getNameColumn('usuarioId'),
+            value:usuario
+        }
+        
+    }},{column:empleado.getNameColumn('empleadoId'), value:empleadoId});
+    if(row != null){
+        res.status(200).json({success:'OK'});
+    }else{
+        res.status(500).json({error:'Error en la actualización'});
+    }
 };
 
 empleadosController.getEmpleados = async (req, res)=>{

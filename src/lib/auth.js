@@ -20,7 +20,7 @@ module.exports = {
          if(req.user.hasOwnProperty('empleadoId')){
              console.log("Entro a la propiedad");
             const pages = req.user.page;
-
+            console.log("Paginas ----->", pages[0]);
             for(var i=0; i<pages.length;i++){
                 console.log(pages[i].url);
                 if(pages[i].url === url){

@@ -62,7 +62,10 @@ passport.serializeUser(async (user, done) => {
     switch(user.usuarioId){
         case 1:
         
-        user.page = await paginaController.executeQuery(query,[user.usuarioId]);
+        /* user.page = await paginaController.executeQuery(query,[user.usuarioId]); */
+        var rows = await paginaController.getUsuarioAcceso(parseInt(user.usuarioId))
+        user.page = rows[0];
+        user.pageHTML = await paginaController.buildMenuHtml(user.page);
         /* console.log("Serealize",user); */
         done(null, user);
         break;
