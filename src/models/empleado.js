@@ -51,6 +51,10 @@ empleado.columns={
 
     fechaCreacion:{
         column:'FECHA_CREACION'
+    },
+
+    usuarioCreacion:{
+        column:'USUARIO_CREACION'
     }
 
 };

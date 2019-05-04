@@ -7,5 +7,5 @@ router.post('/saveEmpleado',isLoggedIn,validateAccesousUsuario,empleadosControll
 router.post('/updateEmpleado',isLoggedIn,empleadosController.update);
 router.get('/getEmpleados',isLoggedIn, empleadosController.getEmpleados);
 router.get('/getEmpleadoFindById/:empleadoId', isLoggedIn, empleadosController.getEmpleadoFindById);
-router.post('/delteEmpleado',isLoggedIn);
+router.delete('/delete/:empleadoId',isLoggedIn, empleadosController.delete);
 module.exports = router;

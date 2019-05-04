@@ -105,6 +105,18 @@ empleadosController.findByProperty = async (property, value) => {
     return await empleado.findByProperty(property, value);
 };
 empleadosController.delete = async (req, res) => {
-
+    console.log("Entro al delete");
+    const {empleadoId} = req.params;
+    const row = await empleado.update({columns:{
+        eliminadoId:{
+            column:empleado.getNameColumn('eliminadoId'),
+            value:1
+        }
+    }},{ column: empleado.getNameColumn('empleadoId'), value: empleadoId });
+    if (row != null) {
+        res.status(200).json({ success: 'OK' });
+    } else {
+        res.status(500).json({ error: 'Error en eliminar el empleado' });
+    }
 };
 module.exports = empleadosController;

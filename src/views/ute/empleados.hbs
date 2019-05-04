@@ -99,7 +99,7 @@
                 <td>\{{entry['email']}}</td>
                 <td>
                     <button type='button' class="btn btn-primary"  v-on:click='getObject(entry["empleadoId"])' >Editar</button>
-                    <button type='button'    class="btn btn-danger">Eliminar</button>
+                    <button type='button'    class="btn btn-danger" v-on:click='deleteObject(entry["empleadoId"])'>Eliminar</button>
                 </td>
               </tr>
             </tbody>

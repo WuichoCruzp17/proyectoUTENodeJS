@@ -138,6 +138,7 @@ var modsJS ={
 
     getComponent:function(){
           utilGrid.methods.getObject  = modsJS.getEmpleado;
+          utilGrid.methods.deleteObject = modsJS.prepateToRemoveEmpleado;
           return {
               template:'#grid-template',
               props:    utilGrid.propsDefault,
@@ -177,6 +178,24 @@ var modsJS ={
         }
     },
 
+    prepateToRemoveEmpleado:function(id){
+       var result =  confirm("¿Esta seguro de eliminar este empleado?");
+       if(result){
+           modsJS.removeEmpleado(id);
+       }
+    },
+
+    removeEmpleado:function(id){
+        $.ajax({
+            method: "DELETE",
+            url: "/ute/empleados/delete/"+id,
+            dataType: 'json'
+        }).done(function (result) {
+            if(result.hasOwnProperty('success')){
+                modsJS.getEmpleados();
+            }
+        });
+    },
     validateUnderScript:function(string){
         return string.split('_').length>1 ? true:false;
     },

@@ -179,7 +179,7 @@ utilModel.createObjecStringtWithModel = function () {
 
 utilModel.findByProperty = async function (property, value,columns) {
     try {
-        var row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =?`, [value]);
+        var row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =? ${(this.columns.hasOwnProperty('eliminadoId')) ? ' and ' +'ELIMINADO_ID = 0':''}`, [value]);
         return row;
     } catch (err) { console.log(err); return null; }
 };
