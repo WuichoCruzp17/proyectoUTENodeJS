@@ -1,10 +1,10 @@
 const utilModel = {};
 const pool = require('../database');
-const codeBss = require('../resources/codeBss');
+const {NOELIMINADO,ELIMINADO, ACTIVO} = require('../resources/codeBss');
 const genericDAO = require('../DAO/genericDAO');
 
-utilModel.save = async function (cols) {
-        const row = await pool.query(`INSERT INTO ${this.table.name} VALUES(${this.saveColumns(cols)})`);
+utilModel.save = async function (cols, params) {
+        const row = await genericDAO.execute(`INSERT INTO ${this.table.name} VALUES(${this.saveColumns(cols)})`,params);
         return row;
 };
 
@@ -107,10 +107,13 @@ utilModel.getNumColumns = function (cols) {
  * @returns {String}
  */
 utilModel.generalizarCriteria = function () {
-    return (this.columns.hasOwnProperty('eliminadoId')) ?`WHERE ELIMINADO_ID = ${codeBss.NOELIMINADO} AND ESTATUS_ID = ${codeBss.ACTIVO}` :'';
+    return (this.columns.hasOwnProperty('eliminadoId')) ?`WHERE ELIMINADO_ID = ${NOELIMINADO} AND ESTATUS_ID = ${ACTIVO}` :'';
 };
 
 utilModel.saveColumns = function (cols) {
+    console.log("COlS --->", cols);
+    cols =(cols === null) ? this :cols;
+    console.log(cols);
     const numColumns = this.getNumColumns(cols.columns) - 1;
     const columns = cols.columns;
     var setColumns = "";
@@ -119,6 +122,7 @@ utilModel.saveColumns = function (cols) {
         setColumns += (i < numColumns) ? '?, ' : '?';
         i++;
     }
+    console.log("Query Insert-->", setColumns );
     return setColumns;
 };
 
@@ -178,10 +182,7 @@ utilModel.createObjecStringtWithModel = function () {
 };
 
 utilModel.findByProperty = async function (property, value,columns) {
-    try {
-        var row = await pool.query(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =? ${(this.columns.hasOwnProperty('eliminadoId')) ? ' and ' +'ELIMINADO_ID = 0':''}`, [value]);
-        return row;
-    } catch (err) { console.log(err); return null; }
+    return  await genericDAO.execute(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =? ${(this.columns.hasOwnProperty('eliminadoId')) ? ' and ' +`ELIMINADO_ID = ${NOELIMINADO}`:''} AND ${this.getColumn(this.columns,'primarykey')} <> ${value}`, [value]);       
 };
 
 utilModel.executeStored =async function(nameStore,params){

@@ -2,7 +2,7 @@ const pool = require('../database');
 const empleado = require('../models/empleado');
 const usuarioController = require('./usuarioController');
 const bdComponents = require('../utilsModels/bdComponents');
-const paginaMenuController = require('./paginaMenuController');
+const {NOELIMINADO,ELIMINADO, ACTIVO} = require('../resources/codeBss');
 const empleadosController = {};
 empleadosController.getViewEmpleados = async (req, res) => {
     //const usuario = await pool.query('SELECT USUARIO_ID AS usuarioId, NOMBRE AS nombre FROM USUARIO');
@@ -10,13 +10,17 @@ empleadosController.getViewEmpleados = async (req, res) => {
     res.render('ute/empleados', { usuario });
 };
 empleadosController.save = async (req, res) => {
-
+    
     const user = req.body;
+    console.log(user);
     user.usuario = parseInt(user.usuario);
-    const row = await pool.query('INSERT INTO EMPLEADO VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)', [
-        null, user.name, user.apellidoPaterno, user.apellidoMaterno, user.fechaNacimiento, user.email,
-        user.upload, user.description, 'luis', parseInt(user.usuario), 1, 1, null
-    ]);
+    user.usuarioCeracion = req.user.empleadoId;
+    user.eliminadoId = 0;
+    user.fechaCreacion = null;
+    user.estatusId = 1;
+    
+    const row = await empleado.save(null,[null,user.name,user.apellidoPaterno,user.apellidoMaterno,
+        user.fechaNacimiento, user.email,user.upload,user.description,'luis',user.usuario,NOELIMINADO,ACTIVO,null,req.user.empleadoId]);
     /* const email =user.email;
     if(row){
         var mailOptions = {
@@ -80,7 +84,7 @@ empleadosController.getEmpleados = async (req, res) => {
         concat: bdComponents.functions.CONCAT([empleado.getNameColumn('nombre'), empleado.getNameColumn('apellidoPaterno'), empleado.getNameColumn('apellidoMaterno')], "nombre"),
         email: empleado.getNameColumn('email')
     };
-    const empleados = await empleado.findByProperty(empleado.getNameColumn('usuarioId'), 3, cols);
+    const empleados = await empleado.findByProperty(empleado.getNameColumn('usuarioCreacion'), req.user.empleadoId, cols);
     res.json(empleados);
 };
 
@@ -100,8 +104,6 @@ empleadosController.getEmpleadoFindById = async (req, res) => {
     res.json(obj);
 };
 empleadosController.findByProperty = async (property, value) => {
-    console.log('Propiedad', property);
-    console.log('Value', value);
     return await empleado.findByProperty(property, value);
 };
 empleadosController.delete = async (req, res) => {

@@ -85,7 +85,7 @@ var modsJS ={
             
         }
         if(c ===cV){
-            if(object.empleadoId!==""){
+            if(object.empleadoId!=="0" || object.empleadoId==""){
                 modsJS.update(object);
             }else{modsJS.save(object);}
             
@@ -93,12 +93,13 @@ var modsJS ={
     },  save: function (object) {
         $.ajax({
             method: "POST",
-            url: "/ute/saveEmpleado",
+            url: "/ute/empleados/saveEmpleado",
             data: object,
             dataType: 'json'
         }).done(function (result) {
            if(result){
             modsJS.clenFrom()
+            modsJS.getEmpleados();
            }
         });
     },

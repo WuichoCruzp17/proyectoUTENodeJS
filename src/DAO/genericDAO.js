@@ -4,18 +4,18 @@ const genericDAO = {};
 
 genericDAO.execute = async (query, params) => {
     try {
+        console.log("Query -->",query);
         var rows = null;
         if (typeof params === "undefined") {
             rows = await pool.query(query);
         } else {
-            console.log("Query: ", query);
-            console.log("Query: ", params);
             rows = await pool.query(query, params);
         }
-        console.log(rows);
         return rows;
     } catch (err) {
+        console.log("Error--->");
         console.log(err);
+        console.log(params);
         return null;
     }
 };

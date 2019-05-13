@@ -48,7 +48,9 @@ empleado.columns={
     eliminadoId:{
         column:'ELIMINADO_ID'
     },
-
+    estatusId:{
+        column:'ESTATUS_ID'
+    },
     fechaCreacion:{
         column:'FECHA_CREACION'
     },
