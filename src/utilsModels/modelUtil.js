@@ -182,7 +182,8 @@ utilModel.createObjecStringtWithModel = function () {
 };
 
 utilModel.findByProperty = async function (property, value,columns) {
-    return  await genericDAO.execute(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =? ${(this.columns.hasOwnProperty('eliminadoId')) ? ' and ' +`ELIMINADO_ID = ${NOELIMINADO}`:''} AND ${this.getColumn(this.columns,'primarykey')} <> ${value}`, [value]);       
+    const complemento =(typeof value !="string")?  ` AND ${this.getColumn(this.columns,'primarykey')} <> ${value}`:"";
+    return  await genericDAO.execute(`SELECT ${this.getColumnString(columns)} FROM ${this.table.name} WHERE ${property}  =? ${(this.columns.hasOwnProperty('eliminadoId')) ? ' and ' +`ELIMINADO_ID = ${NOELIMINADO}`:''}` +complemento , [value]);       
 };
 
 utilModel.executeStored =async function(nameStore,params){

@@ -6,7 +6,7 @@ loginController.getUser =async (login)=>{
     var rows =null;
  switch(login.usuarioId){
     case 1:
-        try{/* rows = await pool.query('SELECT * FROM EMPLEADO WHERE EMAIL = ? ',[login.username]); */
+        try{
         rows = await empleadoController.findByProperty('email',login.username);
     }catch(err){console.log(err); row =[];}
         
