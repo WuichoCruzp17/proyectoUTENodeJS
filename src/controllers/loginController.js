@@ -17,6 +17,5 @@ loginController.getUser =async (login)=>{
 loginController.getLogout= (req,res)=>{
     console.log("Entro al logout");
     req.logOut();
-    /* res.render('index'); */
 };
 module.exports = loginController;

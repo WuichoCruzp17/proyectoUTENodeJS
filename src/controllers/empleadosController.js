@@ -1,4 +1,3 @@
-const pool = require('../database');
 const empleado = require('../models/empleado');
 const usuarioController = require('./usuarioController');
 const bdComponents = require('../utilsModels/bdComponents');

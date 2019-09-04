@@ -3,20 +3,23 @@ const pool = require('../database');
 const genericDAO = {};
 
 genericDAO.execute = async (query, params) => {
-    try {
         console.log("Query -->",query);
         var rows = null;
         if (typeof params === "undefined") {
-            rows = await pool.query(query);
+          await    pool.query(query).then(function(result){
+                rows = result;
+            }).catch(function(err){
+                rows = null;
+                console.log("Error ->"+err);
+            });
         } else {
-            rows = await pool.query(query, params);
+          await  pool.query(query, params).then(function(result){
+                rows = result;
+            }).catch(function(err){
+                rows = null;
+                console.log("Error -->",err);
+            });
         }
         return rows;
-    } catch (err) {
-        console.log("Error--->");
-        console.log(err);
-        console.log(params);
-        return null;
-    }
 };
 module.exports = genericDAO;
